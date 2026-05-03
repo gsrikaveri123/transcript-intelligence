@@ -35,8 +35,10 @@ I used a transparent hybrid approach:
 2. Classify each meeting by call type: customer support, external customer, or internal.
 3. Score each meeting into one primary business theme and product surface using explainable keyword rules.
 4. Run a lightweight TF-IDF k-means clustering experiment to test whether unsupervised text structure agrees with the business taxonomy.
-5. Aggregate utterance-level sentiment, provided meeting sentiment, action items, and risk signals.
-6. Generate CSV/JSON outputs, an HTML dashboard, SVG charts, a written report, and a PowerPoint deck.
+5. Build a small semantic retrieval layer for RAG-style stakeholder questions and evidence quotes.
+6. Generate AI evaluation signals: taxonomy confidence, cluster purity, and a human-review queue.
+7. Aggregate utterance-level sentiment, provided meeting sentiment, action items, and risk signals.
+8. Generate CSV/JSON outputs, an HTML dashboard, SVG charts, a written report, and a PowerPoint deck.
 
 This is intentionally explainable for an interview panel. In production, I would add embedding clustering or LLM-assisted labeling, then keep the rule layer as an audit and routing guardrail.
 
@@ -53,6 +55,9 @@ This is intentionally explainable for an interview panel. In production, I would
 - `outputs/call_type_summary.csv`: sentiment and risk by support, external, and internal calls.
 - `outputs/product_summary.csv`: product-level risk signal.
 - `outputs/cluster_summary.csv`: dependency-free TF-IDF clustering experiment with top terms and dominant themes.
+- `outputs/semantic_search_examples.csv`: RAG-style evidence retrieval examples for stakeholder questions.
+- `outputs/evaluation_metrics.json`: confidence, cluster purity, and human-review metrics.
+- `outputs/human_review_queue.csv`: low-confidence items that should be reviewed before automating workflow.
 - `outputs/meeting_analysis.csv`: meeting-level detail for Q&A and drill-down.
 - `outputs/dashboard.html`: simple browser dashboard for the demo walkthrough.
 

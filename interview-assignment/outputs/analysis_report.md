@@ -54,6 +54,18 @@ The clustering layer is not the production classifier; it is an exploratory chec
 | 4 | 13 | data, platform, backup, event, detect, failure, outage, issue | Incident & Reliability | 9.62 |
 | 3 | 4 | control, feedback, gaps, role, pain, management, training, security training | Product Feedback & Roadmap | 8.5 |
 
+## AI Evaluation and Human Review
+
+To make the system more AI-ready, the pipeline now reports lightweight evaluation metrics and a review queue.
+
+- Average theme confidence: **83%**
+- Low-confidence meetings: **1** (1.0%)
+- Average cluster purity against rule labels: **62%**
+
+Human review queue:
+
+- **Aegis / Meridian Capital - Service Reliability Discussion**: Incident & Reliability at 25% confidence, cluster `Outage`, risk 10/10
+
 ## Additional Insight Ideas
 
 1. **Revenue risk heatmap for sales and CS leaders.** Combine renewal language, competitor mentions, negative sentiment, and account names to flag customers where product friction is turning into commercial risk.

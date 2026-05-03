@@ -82,10 +82,21 @@ Show:
 - `sentiment_from_transcript`
 - `risk_score`
 - `add_discovery_clusters`
+- `generate_semantic_search_examples`
+- `evaluate_taxonomy`
 
 Narration:
 
-"The important technical decision is transparency. I wanted a pipeline where every label can be explained. If a stakeholder challenges a category, we can inspect the source text and the rule. I also added a lightweight TF-IDF k-means clustering experiment to show discovery beyond hand-written rules. In production, I would replace that with embeddings or LLM labeling and measure agreement against this explainable baseline."
+"The important technical decision is transparency. I wanted a pipeline where every label can be explained. If a stakeholder challenges a category, we can inspect the source text and the rule. I also added a lightweight TF-IDF k-means clustering experiment to show discovery beyond hand-written rules, plus a semantic retrieval layer that behaves like a small RAG prototype. In production, I would replace that with embeddings or LLM labeling and measure agreement against this explainable baseline."
+
+Show:
+
+- `outputs/semantic_search_examples.csv`
+- `outputs/evaluation_metrics.json`
+
+Say:
+
+"The evaluation layer reports theme confidence, cluster purity, and a human-review queue. That is important because transcript intelligence should route ambiguous customer conversations carefully rather than blindly automating every decision."
 
 ## 8:00-9:30 — Close
 

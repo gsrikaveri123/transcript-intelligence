@@ -114,6 +114,16 @@ THEMES: dict[str, list[str]] = {
     ],
 }
 
+TITLE_THEME_RULES = [
+    ("Competitive & Market", ["competitive", "win/loss", "vendor comparison"]),
+    ("Incident & Reliability", ["outage", "incident", "latency", "timeout", "dashboard down", "alerts not firing", "data gaps", "false positives", "performance", "slow", "failure", "bug"]),
+    ("Identity & Access", ["identity", "ldap", "sso", "mfa", "saml", "scim", "account recovery"]),
+    ("Backup & Recovery", ["backup", "restore", "recovery", "protect", "cloudprime"]),
+    ("Compliance & Audit", ["comply", "compliance", "soc 2", "hipaa", "audit", "iso 27001", "pci dss"]),
+    ("Renewal & Commercial Risk", ["renewal", "billing", "invoice", "contract", "annual review", "business review", "q1 business review", "q2 planning", "account review", "platform concerns", "license", "overage"]),
+    ("Product Feedback & Roadmap", ["roadmap", "feedback", "design review", "launch", "deployment", "sprint", "planning", "all hands", "standup"]),
+]
+
 PRODUCT_KEYWORDS: dict[str, list[str]] = {
     "Detect": ["detect", "alerts", "logvault", "siem", "dashboard", "latency", "outage"],
     "Comply": ["comply", "compliance", "soc 2", "hipaa", "audit", "report", "template"],
@@ -165,6 +175,7 @@ class MeetingAnalysis:
     cluster_id: int = -1
     cluster_terms: str = ""
     cluster_label: str = ""
+    theme_confidence: float = 0.0
 
 
 STOPWORDS = {
@@ -284,17 +295,8 @@ def score_keywords(text: str, keyword_map: dict[str, list[str]]) -> Counter:
 
 def top_two_theme(text: str) -> tuple[str, str]:
     title = text.split(" || ", 1)[0]
-    title_rules = [
-        ("Competitive & Market", ["competitive", "win/loss", "vendor comparison"]),
-        ("Incident & Reliability", ["outage", "incident", "latency", "timeout", "dashboard down", "alerts not firing", "data gaps", "false positives", "performance", "slow", "failure", "bug"]),
-        ("Identity & Access", ["identity", "ldap", "sso", "mfa", "saml", "scim", "account recovery"]),
-        ("Backup & Recovery", ["backup", "restore", "recovery", "protect", "cloudprime"]),
-        ("Compliance & Audit", ["comply", "compliance", "soc 2", "hipaa", "audit", "iso 27001", "pci dss"]),
-        ("Renewal & Commercial Risk", ["renewal", "billing", "invoice", "contract", "annual review", "business review", "q1 business review", "q2 planning", "account review", "platform concerns", "license", "overage"]),
-        ("Product Feedback & Roadmap", ["roadmap", "feedback", "design review", "launch", "deployment", "sprint", "planning", "all hands", "standup"]),
-    ]
     title_hits: list[str] = []
-    for label, patterns in title_rules:
+    for label, patterns in TITLE_THEME_RULES:
         if any(pattern in title for pattern in patterns):
             title_hits.append(label)
     if title_hits:
@@ -308,6 +310,27 @@ def top_two_theme(text: str) -> tuple[str, str]:
     primary = ordered[0][0]
     secondary = ordered[1][0] if len(ordered) > 1 else "None"
     return primary, secondary
+
+
+def theme_confidence(text: str, primary_theme: str) -> float:
+    """Approximate classifier confidence from keyword margin.
+
+    Low-confidence rows are natural candidates for human review or an LLM
+    adjudication step in a production workflow.
+    """
+    title = text.split(" || ", 1)[0]
+    for label, patterns in TITLE_THEME_RULES:
+        if label == primary_theme and any(pattern in title for pattern in patterns):
+            return 0.86
+
+    scores = score_keywords(text, THEMES)
+    if not scores:
+        return 0.0
+    ordered = scores.most_common()
+    top = scores.get(primary_theme, ordered[0][1])
+    runner_up = ordered[1][1] if len(ordered) > 1 else 0
+    confidence = (top - runner_up + 1) / (top + 1)
+    return round(max(0.1, min(0.99, confidence)), 2)
 
 
 def product_tags(text: str) -> list[str]:
@@ -394,6 +417,7 @@ def analyze_meeting(folder: Path) -> MeetingAnalysis:
         topics=", ".join(summary.get("topics", [])),
         summary=summary.get("summary", ""),
         example_quote=choose_quote(transcript, primary),
+        theme_confidence=theme_confidence(text, primary),
     )
 
 
@@ -505,6 +529,100 @@ def add_discovery_clusters(rows: list[MeetingAnalysis], cluster_count: int = 7) 
     return sorted(cluster_summaries, key=lambda row: (-row["meetings"], row["cluster_id"]))
 
 
+def search_similar(rows: list[MeetingAnalysis], query: str, limit: int = 5) -> list[dict[str, Any]]:
+    corpus_vectors = tfidf_vectors(rows + [MeetingAnalysis(
+        meeting_id="query",
+        title=query,
+        call_type="",
+        primary_theme="",
+        secondary_theme="",
+        products="",
+        start_time="",
+        duration_minutes=0.0,
+        attendee_count=0,
+        transcript_utterances=0,
+        sentiment_score=0.0,
+        overall_sentiment="",
+        transcript_sentiment_score=0.0,
+        negative_utterance_share=0.0,
+        positive_utterance_share=0.0,
+        action_item_count=0,
+        key_moment_count=0,
+        risk_score=0,
+        topics="",
+        summary=query,
+        example_quote="",
+    )])
+    query_vector = corpus_vectors[-1]
+    scored = []
+    for row, vector in zip(rows, corpus_vectors[:-1]):
+        score = 1 - cosine_distance(query_vector, vector)
+        scored.append((score, row))
+    results = []
+    for score, row in sorted(scored, key=lambda item: item[0], reverse=True)[:limit]:
+        results.append(
+            {
+                "query": query,
+                "similarity": round(score, 3),
+                "meeting_id": row.meeting_id,
+                "title": row.title,
+                "call_type": row.call_type,
+                "theme": row.primary_theme,
+                "products": row.products,
+                "risk_score": row.risk_score,
+                "sentiment_score": row.sentiment_score,
+                "evidence_quote": row.example_quote,
+            }
+        )
+    return results
+
+
+def generate_semantic_search_examples(rows: list[MeetingAnalysis]) -> list[dict[str, Any]]:
+    queries = [
+        "Which calls show Detect reliability or outage risk?",
+        "Where do customers mention renewal risk, pricing, or competitive evaluation?",
+        "What product gaps should product managers prioritize?",
+        "Which compliance or audit conversations need roadmap follow-up?",
+        "Which identity and access issues are creating customer friction?",
+    ]
+    examples: list[dict[str, Any]] = []
+    for query in queries:
+        examples.extend(search_similar(rows, query, limit=5))
+    return examples
+
+
+def evaluate_taxonomy(rows: list[MeetingAnalysis], cluster_summary: list[dict[str, Any]]) -> dict[str, Any]:
+    total = len(rows)
+    low_confidence = [row for row in rows if row.theme_confidence < 0.35]
+    cluster_purity_values = []
+    for cluster in cluster_summary:
+        cluster_rows = [row for row in rows if row.cluster_id == cluster["cluster_id"]]
+        if not cluster_rows:
+            continue
+        dominant_count = Counter(row.primary_theme for row in cluster_rows).most_common(1)[0][1]
+        cluster_purity_values.append(dominant_count / len(cluster_rows))
+
+    return {
+        "meeting_count": total,
+        "theme_count": len(set(row.primary_theme for row in rows)),
+        "cluster_count": len(cluster_summary),
+        "avg_theme_confidence": round(statistics.mean(row.theme_confidence for row in rows), 2),
+        "low_confidence_meetings": len(low_confidence),
+        "low_confidence_share": round(len(low_confidence) / total, 3) if total else 0.0,
+        "avg_cluster_purity": round(statistics.mean(cluster_purity_values), 2) if cluster_purity_values else 0.0,
+        "human_review_queue": [
+            {
+                "title": row.title,
+                "theme": row.primary_theme,
+                "confidence": row.theme_confidence,
+                "cluster_label": row.cluster_label,
+                "risk_score": row.risk_score,
+            }
+            for row in sorted(low_confidence, key=lambda row: (row.theme_confidence, -row.risk_score, row.title))[:10]
+        ],
+    }
+
+
 def aggregate(rows: list[MeetingAnalysis]) -> dict[str, Any]:
     by_type: dict[str, list[MeetingAnalysis]] = defaultdict(list)
     by_theme: dict[str, list[MeetingAnalysis]] = defaultdict(list)
@@ -592,7 +710,13 @@ def bar_svg(items: list[tuple[str, float]], title: str, path: Path, color: str =
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def write_markdown_report(rows: list[MeetingAnalysis], summary: dict[str, Any], cluster_summary: list[dict[str, Any]], path: Path) -> None:
+def write_markdown_report(
+    rows: list[MeetingAnalysis],
+    summary: dict[str, Any],
+    cluster_summary: list[dict[str, Any]],
+    evaluation: dict[str, Any],
+    path: Path,
+) -> None:
     theme_lines = []
     for item in summary["theme_summary"]:
         examples = "; ".join(item["example_meetings"])
@@ -614,6 +738,11 @@ def write_markdown_report(rows: list[MeetingAnalysis], summary: dict[str, Any], 
         f"| {item['cluster_id']} | {item['meetings']} | {item['top_terms']} | {item['dominant_theme']} | {item['avg_risk_score']} |"
         for item in cluster_summary
     ]
+
+    review_queue = "\n".join(
+        f"- **{item['title']}**: {item['theme']} at {item['confidence']:.0%} confidence, cluster `{item['cluster_label']}`, risk {item['risk_score']}/10"
+        for item in evaluation["human_review_queue"][:6]
+    ) or "- No low-confidence items found."
 
     content = f"""# Transcript Intelligence Analysis
 
@@ -651,6 +780,18 @@ The clustering layer is not the production classifier; it is an exploratory chec
 | Cluster | Meetings | Top terms | Dominant business theme | Avg risk |
 |---:|---:|---|---|---:|
 {chr(10).join(cluster_lines)}
+
+## AI Evaluation and Human Review
+
+To make the system more AI-ready, the pipeline now reports lightweight evaluation metrics and a review queue.
+
+- Average theme confidence: **{evaluation['avg_theme_confidence']:.0%}**
+- Low-confidence meetings: **{evaluation['low_confidence_meetings']}** ({evaluation['low_confidence_share']:.1%})
+- Average cluster purity against rule labels: **{evaluation['avg_cluster_purity']:.0%}**
+
+Human review queue:
+
+{review_queue}
 
 ## Additional Insight Ideas
 
@@ -731,6 +872,8 @@ def main() -> None:
 
     rows = [analyze_meeting(folder) for folder in sorted(args.dataset.iterdir()) if folder.is_dir()]
     cluster_summary = add_discovery_clusters(rows)
+    evaluation = evaluate_taxonomy(rows, cluster_summary)
+    semantic_examples = generate_semantic_search_examples(rows)
     summary = aggregate(rows)
 
     row_dicts = [asdict(row) for row in rows]
@@ -738,10 +881,14 @@ def main() -> None:
     (args.output / "meeting_analysis.json").write_text(json.dumps(row_dicts, indent=2), encoding="utf-8")
     (args.output / "summary_metrics.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     (args.output / "cluster_summary.json").write_text(json.dumps(cluster_summary, indent=2), encoding="utf-8")
+    (args.output / "evaluation_metrics.json").write_text(json.dumps(evaluation, indent=2), encoding="utf-8")
+    (args.output / "semantic_search_examples.json").write_text(json.dumps(semantic_examples, indent=2), encoding="utf-8")
     write_csv(summary["theme_summary"], args.output / "theme_summary.csv")
     write_csv(summary["call_type_summary"], args.output / "call_type_summary.csv")
     write_csv(summary["product_summary"], args.output / "product_summary.csv")
     write_csv(cluster_summary, args.output / "cluster_summary.csv")
+    write_csv(semantic_examples, args.output / "semantic_search_examples.csv")
+    write_csv(evaluation["human_review_queue"], args.output / "human_review_queue.csv")
 
     bar_svg([(x["theme"], x["meetings"]) for x in summary["theme_summary"]], "Meetings by Primary Theme", args.output / "theme_counts.svg")
     bar_svg(
@@ -762,7 +909,7 @@ def main() -> None:
         args.output / "cluster_counts.svg",
         color="#4F7B58",
     )
-    write_markdown_report(rows, summary, cluster_summary, args.output / "analysis_report.md")
+    write_markdown_report(rows, summary, cluster_summary, evaluation, args.output / "analysis_report.md")
     write_html_dashboard(rows, summary, args.output / "dashboard.html")
 
     print(f"Analyzed {len(rows)} meetings")

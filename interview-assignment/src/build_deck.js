@@ -15,6 +15,10 @@ const clusterSummaryPath = path.join(outputsDir, "cluster_summary.json");
 const clusterSummary = fs.existsSync(clusterSummaryPath)
   ? JSON.parse(fs.readFileSync(clusterSummaryPath, "utf8"))
   : [];
+const evaluationPath = path.join(outputsDir, "evaluation_metrics.json");
+const evaluation = fs.existsSync(evaluationPath)
+  ? JSON.parse(fs.readFileSync(evaluationPath, "utf8"))
+  : { avg_theme_confidence: 0, avg_cluster_purity: 0, low_confidence_meetings: 0, low_confidence_share: 0 };
 fs.mkdirSync(deliverablesDir, { recursive: true });
 
 const pptx = new pptxgen();
@@ -250,6 +254,18 @@ function getType(name) {
 {
   const s = pptx.addSlide();
   addBg(s);
+  title(s, "The AI layer includes retrieval, confidence, and human review");
+  card(s, "Theme confidence", `${Math.round(evaluation.avg_theme_confidence * 100)}%`, "Average confidence across the rule-labeled taxonomy.", 0.75, 1.65, C.teal);
+  card(s, "Cluster purity", `${Math.round(evaluation.avg_cluster_purity * 100)}%`, "How often unsupervised clusters align with dominant business labels.", 4.85, 1.65, C.green);
+  card(s, "Review queue", String(evaluation.low_confidence_meetings), "Low-confidence meetings routed for human review before automation.", 8.95, 1.65, C.gold);
+  note(s, "Production AI path", "The current repo uses dependency-free TF-IDF retrieval as a RAG-style prototype. In production, I would replace this with embedding search, LLM extraction constrained to retrieved transcript evidence, confidence thresholds, and human review for ambiguous or high-risk account conversations.", 1.0, 3.55, 10.9, 2.0);
+  footer(s);
+}
+
+// Slide 10
+{
+  const s = pptx.addSlide();
+  addBg(s);
   title(s, "Three insight products would make this valuable beyond analysis");
   card(s, "Sales / CS", "1", "Revenue risk heatmap: renewal language + competitor mentions + negative sentiment.", 0.75, 1.8, C.teal);
   card(s, "Product", "2", "Product gap backlog: repeated pain points with quotes, accounts, and urgency.", 4.85, 1.8, C.gold);
@@ -269,7 +285,7 @@ function getType(name) {
   footer(s);
 }
 
-// Slide 10
+// Slide 11
 {
   const s = pptx.addSlide();
   addBg(s);

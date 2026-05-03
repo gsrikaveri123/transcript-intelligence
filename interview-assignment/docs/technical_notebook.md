@@ -37,6 +37,7 @@ For each meeting, the pipeline creates:
 - `risk_score`: 0-10 heuristic combining escalation language, negative utterances, and action-item load.
 - `example_quote`: evidence quote selected from the transcript.
 - `cluster_id`, `cluster_terms`, `cluster_label`: lightweight TF-IDF k-means discovery output.
+- `theme_confidence`: confidence score used to route ambiguous meetings to human review.
 
 ## Theme Taxonomy
 
@@ -76,9 +77,44 @@ See:
 - `outputs/cluster_summary.json`
 - `outputs/cluster_counts.svg`
 
+## Semantic Retrieval and RAG Pattern
+
+The pipeline also includes a lightweight semantic retrieval layer. It indexes the meetings with the same TF-IDF representation and runs stakeholder-oriented questions against the corpus, returning the most relevant transcripts with evidence quotes.
+
+Example questions:
+
+- Which calls show Detect reliability or outage risk?
+- Where do customers mention renewal risk, pricing, or competitive evaluation?
+- What product gaps should product managers prioritize?
+- Which compliance or audit conversations need roadmap follow-up?
+
+See:
+
+- `outputs/semantic_search_examples.csv`
+- `outputs/semantic_search_examples.json`
+
+In production, this would become a RAG workflow using embeddings, vector search, source citations, and LLM-generated summaries constrained to retrieved evidence.
+
+## Evaluation and Human Review
+
+The current repo includes lightweight AI evaluation artifacts:
+
+- Average taxonomy confidence.
+- Cluster purity versus the rule-based labels.
+- A low-confidence human-review queue.
+
+This matters because a transcript intelligence product should not automatically route ambiguous customer conversations without review. The confidence and review queue show how I would design a human-in-the-loop path before production automation.
+
+See:
+
+- `outputs/evaluation_metrics.json`
+- `outputs/human_review_queue.csv`
+
 ## Production Next Steps
 
 - Add embedding clustering to discover emerging topics not covered by the current taxonomy.
+- Replace TF-IDF retrieval with embedding search and cite retrieved utterances in LLM-generated answers.
+- Add a labeled evaluation set and measure precision/recall for themes, action-item extraction, risk detection, and owner routing.
 - Add an LLM labeling pass with confidence scores and explanation snippets.
 - Add entity extraction for account, competitor, product module, owner, and severity.
 - Connect output to CRM, ticketing, and roadmap systems so insight becomes workflow.

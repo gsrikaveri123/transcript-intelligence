@@ -1,0 +1,18 @@
+{
+  "meeting_count": 100,
+  "theme_count": 7,
+  "cluster_count": 7,
+  "avg_theme_confidence": 0.83,
+  "low_confidence_meetings": 1,
+  "low_confidence_share": 0.01,
+  "avg_cluster_purity": 0.62,
+  "human_review_queue": [
+    {
+      "title": "Aegis / Meridian Capital - Service Reliability Discussion",
+      "theme": "Incident & Reliability",
+      "confidence": 0.25,
+      "cluster_label": "Outage",
+      "risk_score": 10
+    }
+  ]
+}
