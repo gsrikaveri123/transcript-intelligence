@@ -19,6 +19,10 @@ const evaluationPath = path.join(outputsDir, "evaluation_metrics.json");
 const evaluation = fs.existsSync(evaluationPath)
   ? JSON.parse(fs.readFileSync(evaluationPath, "utf8"))
   : { avg_theme_confidence: 0, avg_cluster_purity: 0, low_confidence_meetings: 0, low_confidence_share: 0 };
+const goldEvaluationPath = path.join(outputsDir, "gold_label_evaluation.json");
+const goldEvaluation = fs.existsSync(goldEvaluationPath)
+  ? JSON.parse(fs.readFileSync(goldEvaluationPath, "utf8"))
+  : { call_type_accuracy: 0, theme_accuracy: 0, risk_accuracy: 0, high_risk_detection: { f1: 0 } };
 fs.mkdirSync(deliverablesDir, { recursive: true });
 
 const pptx = new pptxgen();
@@ -266,6 +270,18 @@ function getType(name) {
 {
   const s = pptx.addSlide();
   addBg(s);
+  title(s, "A gold-label harness turns this from analysis into an AI system");
+  card(s, "Call type", `${Math.round(goldEvaluation.call_type_accuracy * 100)}%`, "Accuracy on the curated validation slice.", 0.75, 1.65, C.teal);
+  card(s, "Theme", `${Math.round(goldEvaluation.theme_accuracy * 100)}%`, "Accuracy on primary business taxonomy labels.", 4.85, 1.65, C.green);
+  card(s, "Risk F1", `${Math.round(goldEvaluation.high_risk_detection.f1 * 100)}%`, "High-risk detection precision/recall balance.", 8.95, 1.65, C.gold);
+  note(s, "Why this matters", "A senior AI system should not stop at generated charts. The repo now includes a 20-meeting gold-label sample and reports accuracy plus precision/recall/F1. In production, this expands into a stratified validation set, reviewer agreement, regression tests, and drift monitoring.", 1.0, 3.55, 10.9, 2.0);
+  footer(s);
+}
+
+// Slide 11
+{
+  const s = pptx.addSlide();
+  addBg(s);
   title(s, "Three insight products would make this valuable beyond analysis");
   card(s, "Sales / CS", "1", "Revenue risk heatmap: renewal language + competitor mentions + negative sentiment.", 0.75, 1.8, C.teal);
   card(s, "Product", "2", "Product gap backlog: repeated pain points with quotes, accounts, and urgency.", 4.85, 1.8, C.gold);
@@ -285,7 +301,7 @@ function getType(name) {
   footer(s);
 }
 
-// Slide 11
+// Slide 12
 {
   const s = pptx.addSlide();
   addBg(s);

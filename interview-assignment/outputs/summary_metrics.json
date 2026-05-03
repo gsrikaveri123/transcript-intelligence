@@ -29,7 +29,7 @@
   "theme_summary": [
     {
       "theme": "Incident & Reliability",
-      "meetings": 28,
+      "meetings": 24,
       "avg_sentiment_score": 2.23,
       "avg_risk_score": 10,
       "example_meetings": [
@@ -61,6 +61,17 @@
       ]
     },
     {
+      "theme": "Identity & Access",
+      "meetings": 12,
+      "avg_sentiment_score": 3.35,
+      "avg_risk_score": 9.08,
+      "example_meetings": [
+        "Identity Team - Q2 Roadmap",
+        "Identity Team - Sprint Retro",
+        "Product Sync - Identity Roadmap"
+      ]
+    },
+    {
       "theme": "Product Feedback & Roadmap",
       "meetings": 11,
       "avg_sentiment_score": 3.74,
@@ -80,17 +91,6 @@
         "Support Case #1514 - Meridian Capital Granular Restore Request",
         "Support Case #2638 - Pineridge Systems CloudPrime S3 Backup Connector",
         "Aegis / Coastal Living Co - Protect Module Expansion"
-      ]
-    },
-    {
-      "theme": "Identity & Access",
-      "meetings": 8,
-      "avg_sentiment_score": 3.89,
-      "avg_risk_score": 8.62,
-      "example_meetings": [
-        "Identity Team - Q2 Roadmap",
-        "Identity Team - Sprint Retro",
-        "Product Sync - Identity Roadmap"
       ]
     },
     {
@@ -114,21 +114,21 @@
     },
     {
       "product": "Detect",
-      "meetings": 51,
-      "avg_sentiment_score": 2.99,
-      "avg_risk_score": 9.51
-    },
-    {
-      "product": "Protect",
-      "meetings": 26,
-      "avg_sentiment_score": 3.52,
-      "avg_risk_score": 9.15
+      "meetings": 58,
+      "avg_sentiment_score": 3.06,
+      "avg_risk_score": 9.47
     },
     {
       "product": "Identity",
-      "meetings": 24,
-      "avg_sentiment_score": 3.56,
-      "avg_risk_score": 9.08
+      "meetings": 29,
+      "avg_sentiment_score": 3.53,
+      "avg_risk_score": 9.14
+    },
+    {
+      "product": "Protect",
+      "meetings": 25,
+      "avg_sentiment_score": 3.58,
+      "avg_risk_score": 9.12
     }
   ],
   "highest_risk_meetings": [

@@ -37,8 +37,9 @@ I used a transparent hybrid approach:
 4. Run a lightweight TF-IDF k-means clustering experiment to test whether unsupervised text structure agrees with the business taxonomy.
 5. Build a small semantic retrieval layer for RAG-style stakeholder questions and evidence quotes.
 6. Generate AI evaluation signals: taxonomy confidence, cluster purity, and a human-review queue.
-7. Aggregate utterance-level sentiment, provided meeting sentiment, action items, and risk signals.
-8. Generate CSV/JSON outputs, an HTML dashboard, SVG charts, a written report, and a PowerPoint deck.
+7. Evaluate the pipeline against a curated gold-label sample with accuracy and high-risk precision/recall/F1.
+8. Aggregate utterance-level sentiment, provided meeting sentiment, action items, and risk signals.
+9. Generate CSV/JSON outputs, an HTML dashboard, SVG charts, a written report, and a PowerPoint deck.
 
 This is intentionally explainable for an interview panel. In production, I would add embedding clustering or LLM-assisted labeling, then keep the rule layer as an audit and routing guardrail.
 
@@ -57,6 +58,8 @@ This is intentionally explainable for an interview panel. In production, I would
 - `outputs/cluster_summary.csv`: dependency-free TF-IDF clustering experiment with top terms and dominant themes.
 - `outputs/semantic_search_examples.csv`: RAG-style evidence retrieval examples for stakeholder questions.
 - `outputs/evaluation_metrics.json`: confidence, cluster purity, and human-review metrics.
+- `outputs/gold_label_evaluation.json`: labeled evaluation results for call type, theme, product, and risk routing.
+- `outputs/gold_label_evaluation.csv`: per-example gold-label predictions and errors.
 - `outputs/human_review_queue.csv`: low-confidence items that should be reviewed before automating workflow.
 - `outputs/meeting_analysis.csv`: meeting-level detail for Q&A and drill-down.
 - `outputs/dashboard.html`: simple browser dashboard for the demo walkthrough.

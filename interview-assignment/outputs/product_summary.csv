@@ -1,5 +1,5 @@
 product,meetings,avg_sentiment_score,avg_risk_score
 Comply,71,3.62,8.72
-Detect,51,2.99,9.51
-Protect,26,3.52,9.15
-Identity,24,3.56,9.08
+Detect,58,3.06,9.47
+Identity,29,3.53,9.14
+Protect,25,3.58,9.12

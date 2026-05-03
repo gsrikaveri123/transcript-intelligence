@@ -3,23 +3,23 @@
 <text x="40" y="44" font-family="Arial" font-size="28" font-weight="700" fill="#182322">Meetings by Primary Theme</text>
 <text x="40" y="104" font-family="Arial" font-size="17" fill="#243130">Incident &amp; Reliability</text>
 <rect x="260" y="80" width="630.0" height="34" rx="4" fill="#2F6F73"/>
-<text x="902.0" y="104" font-family="Arial" font-size="17" font-weight="700" fill="#243130">28</text>
+<text x="902.0" y="104" font-family="Arial" font-size="17" font-weight="700" fill="#243130">24</text>
 <text x="40" y="156" font-family="Arial" font-size="17" fill="#243130">Compliance &amp; Audit</text>
-<rect x="260" y="132" width="495.0" height="34" rx="4" fill="#2F6F73"/>
-<text x="767.0" y="156" font-family="Arial" font-size="17" font-weight="700" fill="#243130">22</text>
+<rect x="260" y="132" width="577.5" height="34" rx="4" fill="#2F6F73"/>
+<text x="849.5" y="156" font-family="Arial" font-size="17" font-weight="700" fill="#243130">22</text>
 <text x="40" y="208" font-family="Arial" font-size="17" fill="#243130">Renewal &amp; Commercial Risk</text>
-<rect x="260" y="184" width="382.5" height="34" rx="4" fill="#2F6F73"/>
-<text x="654.5" y="208" font-family="Arial" font-size="17" font-weight="700" fill="#243130">17</text>
-<text x="40" y="260" font-family="Arial" font-size="17" fill="#243130">Product Feedback &amp; Roadmap</text>
-<rect x="260" y="236" width="247.5" height="34" rx="4" fill="#2F6F73"/>
-<text x="519.5" y="260" font-family="Arial" font-size="17" font-weight="700" fill="#243130">11</text>
-<text x="40" y="312" font-family="Arial" font-size="17" fill="#243130">Backup &amp; Recovery</text>
-<rect x="260" y="288" width="180.0" height="34" rx="4" fill="#2F6F73"/>
-<text x="452.0" y="312" font-family="Arial" font-size="17" font-weight="700" fill="#243130">8</text>
-<text x="40" y="364" font-family="Arial" font-size="17" fill="#243130">Identity &amp; Access</text>
-<rect x="260" y="340" width="180.0" height="34" rx="4" fill="#2F6F73"/>
-<text x="452.0" y="364" font-family="Arial" font-size="17" font-weight="700" fill="#243130">8</text>
+<rect x="260" y="184" width="446.2" height="34" rx="4" fill="#2F6F73"/>
+<text x="718.2" y="208" font-family="Arial" font-size="17" font-weight="700" fill="#243130">17</text>
+<text x="40" y="260" font-family="Arial" font-size="17" fill="#243130">Identity &amp; Access</text>
+<rect x="260" y="236" width="315.0" height="34" rx="4" fill="#2F6F73"/>
+<text x="587.0" y="260" font-family="Arial" font-size="17" font-weight="700" fill="#243130">12</text>
+<text x="40" y="312" font-family="Arial" font-size="17" fill="#243130">Product Feedback &amp; Roadmap</text>
+<rect x="260" y="288" width="288.8" height="34" rx="4" fill="#2F6F73"/>
+<text x="560.8" y="312" font-family="Arial" font-size="17" font-weight="700" fill="#243130">11</text>
+<text x="40" y="364" font-family="Arial" font-size="17" fill="#243130">Backup &amp; Recovery</text>
+<rect x="260" y="340" width="210.0" height="34" rx="4" fill="#2F6F73"/>
+<text x="482.0" y="364" font-family="Arial" font-size="17" font-weight="700" fill="#243130">8</text>
 <text x="40" y="416" font-family="Arial" font-size="17" fill="#243130">Competitive &amp; Market</text>
-<rect x="260" y="392" width="135.0" height="34" rx="4" fill="#2F6F73"/>
-<text x="407.0" y="416" font-family="Arial" font-size="17" font-weight="700" fill="#243130">6</text>
+<rect x="260" y="392" width="157.5" height="34" rx="4" fill="#2F6F73"/>
+<text x="429.5" y="416" font-family="Arial" font-size="17" font-weight="700" fill="#243130">6</text>
 </svg>

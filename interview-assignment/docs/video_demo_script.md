@@ -84,6 +84,7 @@ Show:
 - `add_discovery_clusters`
 - `generate_semantic_search_examples`
 - `evaluate_taxonomy`
+- `evaluate_against_gold`
 
 Narration:
 
@@ -93,10 +94,11 @@ Show:
 
 - `outputs/semantic_search_examples.csv`
 - `outputs/evaluation_metrics.json`
+- `outputs/gold_label_evaluation.json`
 
 Say:
 
-"The evaluation layer reports theme confidence, cluster purity, and a human-review queue. That is important because transcript intelligence should route ambiguous customer conversations carefully rather than blindly automating every decision."
+"The evaluation layer reports theme confidence, cluster purity, a human-review queue, and a curated gold-label evaluation. That is important because transcript intelligence should route ambiguous customer conversations carefully rather than blindly automating every decision."
 
 ## 8:00-9:30 — Close
 

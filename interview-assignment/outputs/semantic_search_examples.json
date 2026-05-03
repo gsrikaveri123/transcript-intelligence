@@ -30,7 +30,7 @@
     "title": "Competitive Threat Assessment - Post Outage",
     "call_type": "Internal",
     "theme": "Competitive & Market",
-    "products": "Comply, Detect",
+    "products": "Detect, Comply",
     "risk_score": 10,
     "sentiment_score": 2.3,
     "evidence_quote": "So we had \u2014 ugh \u2014 we had a spike of about 340 tickets come in during and immediately after the outage. We've closed most of them, but there are still about 40 open, mostly from customers who want detailed impact reports, like specifically w"
@@ -54,7 +54,7 @@
     "title": "Aegis / Northstar Pharma - Urgent: Detect Outage Impact",
     "call_type": "Customer support",
     "theme": "Incident & Reliability",
-    "products": "Comply, Detect",
+    "products": "Detect, Comply, Identity",
     "risk_score": 10,
     "sentiment_score": 2.1,
     "evidence_quote": "Those are the immediate priorities, yes. But Maria \u2014 I want you to understand where I'm sitting. This isn't just about the outage anymore. It's about whether Aegis Detect is the right platform for us long term. And I'm going to be doing my "
@@ -78,7 +78,7 @@
     "title": "Aegis / Northstar Pharma - Urgent: Detect Outage Impact",
     "call_type": "Customer support",
     "theme": "Incident & Reliability",
-    "products": "Comply, Detect",
+    "products": "Detect, Comply, Identity",
     "risk_score": 10,
     "sentiment_score": 2.1,
     "evidence_quote": "Those are the immediate priorities, yes. But Maria \u2014 I want you to understand where I'm sitting. This isn't just about the outage anymore. It's about whether Aegis Detect is the right platform for us long term. And I'm going to be doing my "
@@ -90,7 +90,7 @@
     "title": "Competitive Landscape Review",
     "call_type": "Internal",
     "theme": "Competitive & Market",
-    "products": "Comply, Protect, Identity, Detect",
+    "products": "Comply, Protect, Detect, Identity",
     "risk_score": 10,
     "sentiment_score": 3.4,
     "evidence_quote": "Right, the platform story. Yeah. Okay so if I'm summarizing \u2014 SentinelShield is the most immediate threat in Detect, VaultEdge is one to watch in Protect and potentially Comply, CyberNova is a pricing threat in Identity for mid-market, and "
@@ -102,7 +102,7 @@
     "title": "Aegis / Cobalt Software - Q2 Planning",
     "call_type": "External customer",
     "theme": "Renewal & Commercial Risk",
-    "products": "Comply",
+    "products": "Comply, Detect",
     "risk_score": 10,
     "sentiment_score": 3.4,
     "evidence_quote": "Right. And look, I get that outages happen, I've been in infrastructure long enough to know nothing is bulletproof, but six hours is a long time. Our security team was basically flying blind."
@@ -138,7 +138,7 @@
     "title": "Aegis / Pinnacle Insurance - Detect Roadmap Review",
     "call_type": "External customer",
     "theme": "Product Feedback & Roadmap",
-    "products": "Comply, Detect",
+    "products": "Detect, Comply",
     "risk_score": 10,
     "sentiment_score": 3.6,
     "evidence_quote": "No, absolutely not, and I want to acknowledge that directly \u2014 that outage was a significant failure on our part, it was a cascading failure in the event ingestion pipeline, single point of failure that we should have architected around, and"
@@ -162,7 +162,7 @@
     "title": "Competitive Landscape Review",
     "call_type": "Internal",
     "theme": "Competitive & Market",
-    "products": "Comply, Protect, Identity, Detect",
+    "products": "Comply, Protect, Detect, Identity",
     "risk_score": 10,
     "sentiment_score": 3.4,
     "evidence_quote": "Right, the platform story. Yeah. Okay so if I'm summarizing \u2014 SentinelShield is the most immediate threat in Detect, VaultEdge is one to watch in Protect and potentially Comply, CyberNova is a pricing threat in Identity for mid-market, and "
@@ -282,7 +282,7 @@
     "title": "Identity Team - Q2 Roadmap",
     "call_type": "Internal",
     "theme": "Identity & Access",
-    "products": "Comply, Identity",
+    "products": "Identity, Comply, Detect",
     "risk_score": 10,
     "sentiment_score": 4.4,
     "evidence_quote": "Yeah so the vision here is moving away from static MFA rules \u2014 like, everyone in this role gets MFA \u2014 toward something that's context-aware. So you'd factor in things like login location, device posture, time of day, whether it's an unusual"
@@ -294,7 +294,7 @@
     "title": "Aegis / Crestline Wealth - Identity Module Deployment",
     "call_type": "External customer",
     "theme": "Identity & Access",
-    "products": "Comply, Identity",
+    "products": "Identity, Comply",
     "risk_score": 7,
     "sentiment_score": 4.8,
     "evidence_quote": "Yeah, definitely. So, at a high level we're looking at three phases for a deployment like yours. Phase one is directory sync and SSO configuration \u2014 basically getting Aegis Identity talking to your Entra ID environment, setting up the SAML "

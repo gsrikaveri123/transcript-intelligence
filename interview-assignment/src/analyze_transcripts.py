@@ -116,8 +116,8 @@ THEMES: dict[str, list[str]] = {
 
 TITLE_THEME_RULES = [
     ("Competitive & Market", ["competitive", "win/loss", "vendor comparison"]),
-    ("Incident & Reliability", ["outage", "incident", "latency", "timeout", "dashboard down", "alerts not firing", "data gaps", "false positives", "performance", "slow", "failure", "bug"]),
     ("Identity & Access", ["identity", "ldap", "sso", "mfa", "saml", "scim", "account recovery"]),
+    ("Incident & Reliability", ["outage", "incident", "latency", "timeout", "dashboard down", "alerts not firing", "data gaps", "false positives", "performance", "slow", "failure", "bug"]),
     ("Backup & Recovery", ["backup", "restore", "recovery", "protect", "cloudprime"]),
     ("Compliance & Audit", ["comply", "compliance", "soc 2", "hipaa", "audit", "iso 27001", "pci dss"]),
     ("Renewal & Commercial Risk", ["renewal", "billing", "invoice", "contract", "annual review", "business review", "q1 business review", "q2 planning", "account review", "platform concerns", "license", "overage"]),
@@ -125,10 +125,10 @@ TITLE_THEME_RULES = [
 ]
 
 PRODUCT_KEYWORDS: dict[str, list[str]] = {
-    "Detect": ["detect", "alerts", "logvault", "siem", "dashboard", "latency", "outage"],
+    "Detect": ["detect", "alerts", "logvault", "siem", "dashboard", "latency", "outage", "sentinelshield", "threat visibility"],
     "Comply": ["comply", "compliance", "soc 2", "hipaa", "audit", "report", "template"],
     "Protect": ["protect", "backup", "restore", "recovery", "rto", "rpo", "cloudprime"],
-    "Identity": ["identity", "ldap", "sso", "mfa", "authentication", "account recovery"],
+    "Identity": ["identity", "ldap", "sso", "mfa", "authentication", "account recovery", "role", "roles", "permissions", "rbac"],
 }
 
 NEGATIVE_SIGNALS = [
@@ -334,11 +334,21 @@ def theme_confidence(text: str, primary_theme: str) -> float:
 
 
 def product_tags(text: str) -> list[str]:
+    title = text.split(" || ", 1)[0]
+    title_product_rules = [
+        ("Detect", ["detect", "outage", "logvault", "siem", "alert", "threat visibility", "threat detection"]),
+        ("Comply", ["comply", "compliance", "soc 2", "hipaa", "audit", "iso 27001", "pci dss"]),
+        ("Protect", ["protect", "backup", "restore", "recovery", "cloudprime"]),
+        ("Identity", ["identity", "ldap", "sso", "mfa", "saml", "scim", "account recovery"]),
+    ]
+    title_products = [label for label, patterns in title_product_rules if any(pattern in title for pattern in patterns)]
     scores = score_keywords(text, PRODUCT_KEYWORDS)
     if not scores:
-        return ["Platform"]
+        return title_products or ["Platform"]
     max_score = scores.most_common(1)[0][1]
-    return [label for label, score in scores.most_common() if score >= max(2, max_score * 0.35)] or [scores.most_common(1)[0][0]]
+    scored_products = [label for label, score in scores.most_common() if score >= max(2, max_score * 0.35)]
+    ordered = title_products + [label for label in scored_products if label not in title_products]
+    return ordered or [scores.most_common(1)[0][0]]
 
 
 def sentiment_from_transcript(utterances: list[dict[str, Any]]) -> tuple[float, float, float]:
@@ -623,6 +633,74 @@ def evaluate_taxonomy(rows: list[MeetingAnalysis], cluster_summary: list[dict[st
     }
 
 
+def precision_recall_f1(tp: int, fp: int, fn: int) -> dict[str, float]:
+    precision = tp / (tp + fp) if tp + fp else 0.0
+    recall = tp / (tp + fn) if tp + fn else 0.0
+    f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
+    return {
+        "precision": round(precision, 3),
+        "recall": round(recall, 3),
+        "f1": round(f1, 3),
+    }
+
+
+def evaluate_against_gold(rows: list[MeetingAnalysis], gold_path: Path | None) -> dict[str, Any]:
+    if not gold_path or not gold_path.exists():
+        return {"available": False, "message": "No gold label file provided."}
+
+    by_id = {row.meeting_id: row for row in rows}
+    gold_rows = []
+    with gold_path.open("r", encoding="utf-8", newline="") as f:
+        gold_rows = list(csv.DictReader(f))
+
+    evaluated = []
+    for gold in gold_rows:
+        predicted = by_id.get(gold["meeting_id"])
+        if not predicted:
+            continue
+        predicted_product = predicted.products.split(", ")[0]
+        predicted_high_risk = predicted.risk_score >= 8
+        expected_high_risk = gold["expected_high_risk"].lower() == "true"
+        evaluated.append(
+            {
+                "meeting_id": gold["meeting_id"],
+                "title": predicted.title,
+                "expected_call_type": gold["expected_call_type"],
+                "predicted_call_type": predicted.call_type,
+                "call_type_correct": gold["expected_call_type"] == predicted.call_type,
+                "expected_primary_theme": gold["expected_primary_theme"],
+                "predicted_primary_theme": predicted.primary_theme,
+                "theme_correct": gold["expected_primary_theme"] == predicted.primary_theme,
+                "expected_primary_product": gold["expected_primary_product"],
+                "predicted_primary_product": predicted_product,
+                "product_correct": gold["expected_primary_product"] == predicted_product,
+                "expected_high_risk": expected_high_risk,
+                "predicted_high_risk": predicted_high_risk,
+                "risk_correct": expected_high_risk == predicted_high_risk,
+            }
+        )
+
+    def accuracy(field: str) -> float:
+        if not evaluated:
+            return 0.0
+        return round(sum(1 for row in evaluated if row[field]) / len(evaluated), 3)
+
+    high_risk_tp = sum(1 for row in evaluated if row["expected_high_risk"] and row["predicted_high_risk"])
+    high_risk_fp = sum(1 for row in evaluated if not row["expected_high_risk"] and row["predicted_high_risk"])
+    high_risk_fn = sum(1 for row in evaluated if row["expected_high_risk"] and not row["predicted_high_risk"])
+
+    return {
+        "available": True,
+        "gold_label_count": len(evaluated),
+        "call_type_accuracy": accuracy("call_type_correct"),
+        "theme_accuracy": accuracy("theme_correct"),
+        "product_accuracy": accuracy("product_correct"),
+        "risk_accuracy": accuracy("risk_correct"),
+        "high_risk_detection": precision_recall_f1(high_risk_tp, high_risk_fp, high_risk_fn),
+        "rows": evaluated,
+    }
+
+
 def aggregate(rows: list[MeetingAnalysis]) -> dict[str, Any]:
     by_type: dict[str, list[MeetingAnalysis]] = defaultdict(list)
     by_theme: dict[str, list[MeetingAnalysis]] = defaultdict(list)
@@ -715,6 +793,7 @@ def write_markdown_report(
     summary: dict[str, Any],
     cluster_summary: list[dict[str, Any]],
     evaluation: dict[str, Any],
+    gold_evaluation: dict[str, Any],
     path: Path,
 ) -> None:
     theme_lines = []
@@ -743,6 +822,23 @@ def write_markdown_report(
         f"- **{item['title']}**: {item['theme']} at {item['confidence']:.0%} confidence, cluster `{item['cluster_label']}`, risk {item['risk_score']}/10"
         for item in evaluation["human_review_queue"][:6]
     ) or "- No low-confidence items found."
+
+    if gold_evaluation.get("available"):
+        gold_section = f"""
+## Gold-Label Evaluation
+
+I added a curated 20-meeting gold-label sample to evaluate the pipeline like an AI system, not just a dashboard.
+
+- Call type accuracy: **{gold_evaluation['call_type_accuracy']:.0%}**
+- Theme accuracy: **{gold_evaluation['theme_accuracy']:.0%}**
+- Product accuracy: **{gold_evaluation['product_accuracy']:.0%}**
+- Risk routing accuracy: **{gold_evaluation['risk_accuracy']:.0%}**
+- High-risk detection F1: **{gold_evaluation['high_risk_detection']['f1']:.0%}**
+
+This is deliberately small, but it establishes the evaluation harness. The production version should expand this into a labeled validation set with precision/recall by theme, reviewer agreement, and drift monitoring.
+"""
+    else:
+        gold_section = ""
 
     content = f"""# Transcript Intelligence Analysis
 
@@ -792,6 +888,8 @@ To make the system more AI-ready, the pipeline now reports lightweight evaluatio
 Human review queue:
 
 {review_queue}
+
+{gold_section}
 
 ## Additional Insight Ideas
 
@@ -867,12 +965,17 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", default="dataset", type=Path)
     parser.add_argument("--output", default="outputs", type=Path)
+    parser.add_argument("--gold-labels", default=Path("evaluation/gold_labels.csv"), type=Path)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
 
     rows = [analyze_meeting(folder) for folder in sorted(args.dataset.iterdir()) if folder.is_dir()]
     cluster_summary = add_discovery_clusters(rows)
     evaluation = evaluate_taxonomy(rows, cluster_summary)
+    gold_path = args.gold_labels
+    if not gold_path.is_absolute():
+        gold_path = Path.cwd() / gold_path
+    gold_evaluation = evaluate_against_gold(rows, gold_path)
     semantic_examples = generate_semantic_search_examples(rows)
     summary = aggregate(rows)
 
@@ -882,6 +985,7 @@ def main() -> None:
     (args.output / "summary_metrics.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     (args.output / "cluster_summary.json").write_text(json.dumps(cluster_summary, indent=2), encoding="utf-8")
     (args.output / "evaluation_metrics.json").write_text(json.dumps(evaluation, indent=2), encoding="utf-8")
+    (args.output / "gold_label_evaluation.json").write_text(json.dumps(gold_evaluation, indent=2), encoding="utf-8")
     (args.output / "semantic_search_examples.json").write_text(json.dumps(semantic_examples, indent=2), encoding="utf-8")
     write_csv(summary["theme_summary"], args.output / "theme_summary.csv")
     write_csv(summary["call_type_summary"], args.output / "call_type_summary.csv")
@@ -889,6 +993,8 @@ def main() -> None:
     write_csv(cluster_summary, args.output / "cluster_summary.csv")
     write_csv(semantic_examples, args.output / "semantic_search_examples.csv")
     write_csv(evaluation["human_review_queue"], args.output / "human_review_queue.csv")
+    if gold_evaluation.get("available"):
+        write_csv(gold_evaluation["rows"], args.output / "gold_label_evaluation.csv")
 
     bar_svg([(x["theme"], x["meetings"]) for x in summary["theme_summary"]], "Meetings by Primary Theme", args.output / "theme_counts.svg")
     bar_svg(
@@ -909,7 +1015,7 @@ def main() -> None:
         args.output / "cluster_counts.svg",
         color="#4F7B58",
     )
-    write_markdown_report(rows, summary, cluster_summary, evaluation, args.output / "analysis_report.md")
+    write_markdown_report(rows, summary, cluster_summary, evaluation, gold_evaluation, args.output / "analysis_report.md")
     write_html_dashboard(rows, summary, args.output / "dashboard.html")
 
     print(f"Analyzed {len(rows)} meetings")

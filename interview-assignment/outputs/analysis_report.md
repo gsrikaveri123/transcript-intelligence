@@ -15,12 +15,12 @@ I used a transparent hybrid pipeline rather than a black-box LLM pass. The provi
 
 | Theme | Meetings | Avg sentiment | Avg risk | Example transcripts |
 |---|---:|---:|---:|---|
-| Incident & Reliability | 28 | 2.23 | 10 | Detect Outage - Remediation Plan Review; Support Case #6977 - Brightpath Commerce Slow Backup Performance; Aegis / Meridian Capital - Service Reliability Discussion |
+| Incident & Reliability | 24 | 2.23 | 10 | Detect Outage - Remediation Plan Review; Support Case #6977 - Brightpath Commerce Slow Backup Performance; Aegis / Meridian Capital - Service Reliability Discussion |
 | Compliance & Audit | 22 | 4.37 | 7.59 | Aegis / Redwood Clinical - ISO 27001 Preparation; SOC 2 Audit Preparation - Internal; Comply v2 - Launch Readiness Review |
 | Renewal & Commercial Risk | 17 | 3.64 | 8.53 | Support Case #9279 - Summit Trust Billing Inquiry; Aegis / Cobalt Software - Q2 Planning; Aegis / Atlas Precision - Contract Discussion |
+| Identity & Access | 12 | 3.35 | 9.08 | Identity Team - Q2 Roadmap; Identity Team - Sprint Retro; Product Sync - Identity Roadmap |
 | Product Feedback & Roadmap | 11 | 3.74 | 8.36 | Weekly Engineering Standup; Weekly Engineering Standup; Detect Team - Sprint Planning |
 | Backup & Recovery | 8 | 3.99 | 9.12 | Support Case #1514 - Meridian Capital Granular Restore Request; Support Case #2638 - Pineridge Systems CloudPrime S3 Backup Connector; Aegis / Coastal Living Co - Protect Module Expansion |
-| Identity & Access | 8 | 3.89 | 8.62 | Identity Team - Q2 Roadmap; Identity Team - Sprint Retro; Product Sync - Identity Roadmap |
 | Competitive & Market | 6 | 2.82 | 10 | Competitive Threat Assessment - Post Outage; Win/Loss Analysis - Q1; Aegis / Brightpath Commerce - Competitive Evaluation |
 
 ## Sentiment by Call Type
@@ -50,8 +50,8 @@ The clustering layer is not the production classifier; it is an exploratory chec
 | 2 | 18 | failure, outage, pipeline, single, sprint, single point, point failure, ingestion | Incident & Reliability | 9.61 |
 | 6 | 18 | renewal, pricing, comply, contract, backup, compliance, march, protect | Renewal & Commercial Risk | 8.28 |
 | 0 | 13 | outage, post, incident, march, reliability, post incident, detect, nodes | Incident & Reliability | 9.77 |
-| 1 | 13 | mfa, identity, sso, okta, policy, provisioning, scim, sync | Identity & Access | 9.15 |
-| 4 | 13 | data, platform, backup, event, detect, failure, outage, issue | Incident & Reliability | 9.62 |
+| 1 | 13 | mfa, identity, sso, policy, okta, provisioning, scim, sync | Identity & Access | 9.15 |
+| 4 | 13 | data, backup, platform, event, detect, failure, issue, outage | Incident & Reliability | 9.62 |
 | 3 | 4 | control, feedback, gaps, role, pain, management, training, security training | Product Feedback & Roadmap | 8.5 |
 
 ## AI Evaluation and Human Review
@@ -60,11 +60,25 @@ To make the system more AI-ready, the pipeline now reports lightweight evaluatio
 
 - Average theme confidence: **83%**
 - Low-confidence meetings: **1** (1.0%)
-- Average cluster purity against rule labels: **62%**
+- Average cluster purity against rule labels: **61%**
 
 Human review queue:
 
 - **Aegis / Meridian Capital - Service Reliability Discussion**: Incident & Reliability at 25% confidence, cluster `Outage`, risk 10/10
+
+
+## Gold-Label Evaluation
+
+I added a curated 20-meeting gold-label sample to evaluate the pipeline like an AI system, not just a dashboard.
+
+- Call type accuracy: **100%**
+- Theme accuracy: **100%**
+- Product accuracy: **80%**
+- Risk routing accuracy: **100%**
+- High-risk detection F1: **100%**
+
+This is deliberately small, but it establishes the evaluation harness. The production version should expand this into a labeled validation set with precision/recall by theme, reviewer agreement, and drift monitoring.
+
 
 ## Additional Insight Ideas
 

@@ -102,6 +102,7 @@ The current repo includes lightweight AI evaluation artifacts:
 - Average taxonomy confidence.
 - Cluster purity versus the rule-based labels.
 - A low-confidence human-review queue.
+- A 20-meeting curated gold-label sample with accuracy and high-risk precision/recall/F1.
 
 This matters because a transcript intelligence product should not automatically route ambiguous customer conversations without review. The confidence and review queue show how I would design a human-in-the-loop path before production automation.
 
@@ -109,12 +110,16 @@ See:
 
 - `outputs/evaluation_metrics.json`
 - `outputs/human_review_queue.csv`
+- `evaluation/gold_labels.csv`
+- `outputs/gold_label_evaluation.json`
+- `outputs/gold_label_evaluation.csv`
 
 ## Production Next Steps
 
 - Add embedding clustering to discover emerging topics not covered by the current taxonomy.
 - Replace TF-IDF retrieval with embedding search and cite retrieved utterances in LLM-generated answers.
 - Add a labeled evaluation set and measure precision/recall for themes, action-item extraction, risk detection, and owner routing.
+- Expand the current gold-label sample from 20 examples to a stratified validation set with reviewer agreement.
 - Add an LLM labeling pass with confidence scores and explanation snippets.
 - Add entity extraction for account, competitor, product module, owner, and severity.
 - Connect output to CRM, ticketing, and roadmap systems so insight becomes workflow.

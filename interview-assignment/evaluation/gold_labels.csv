@@ -1,0 +1,21 @@
+meeting_id,expected_call_type,expected_primary_theme,expected_primary_product,expected_high_risk
+01KQ03B0303900521BB089CA,Internal,Incident & Reliability,Detect,true
+01KQ0C1280EDA4E70AAD7C35,Customer support,Renewal & Commercial Risk,Identity,false
+01KQ0CAE7F064EC93F0540CA,Internal,Product Feedback & Roadmap,Comply,false
+01KQ0DFE299AC7A74E8022CA,External customer,Compliance & Audit,Comply,false
+01KQ0F8AFF3DA34FD4580008,External customer,Renewal & Commercial Risk,Detect,true
+01KQ1267C6AA7D9B3125FEC8,Internal,Compliance & Audit,Comply,true
+01KQ1A6B7E81B06F4A13B60D,Customer support,Incident & Reliability,Protect,true
+01KQ298F2846EFE59B0D70E2,Internal,Competitive & Market,Detect,true
+01KQ2B4878EC7B3EE5547007,External customer,Compliance & Audit,Comply,false
+01KQ2D93184912F0147315E7,Customer support,Incident & Reliability,Detect,true
+01KQ31ED026F745FE2A55CCD,Internal,Identity & Access,Identity,true
+01KQ325BDEDEE927D2970775,Customer support,Incident & Reliability,Detect,true
+01KQ351E141926AB7CAB668D,Customer support,Incident & Reliability,Detect,true
+01KQ3CE40428CCC5FF433FFC,Internal,Incident & Reliability,Detect,true
+01KQ45F6F7349D0A620571F1,External customer,Competitive & Market,Detect,true
+01KQ65D43540846FA994B6C4,External customer,Product Feedback & Roadmap,Identity,false
+01KQ7F58A2E07B857C24624D,Internal,Competitive & Market,Detect,true
+01KQ764171AC27A3A94DC695,Internal,Incident & Reliability,Detect,true
+01KQ92EA85FE4C537400227D,Customer support,Compliance & Audit,Comply,false
+01KQ9772B2348F500FB09D1E,Customer support,Identity & Access,Identity,true
