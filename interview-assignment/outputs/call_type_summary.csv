@@ -1,0 +1,4 @@
+call_type,meetings,avg_sentiment_score,negative_utterance_share,avg_risk_score,avg_action_items
+Customer support,31,2.8,0.271,8.9,3.97
+External customer,39,3.9,0.095,8.59,3.95
+Internal,30,3.42,0.169,9.17,4

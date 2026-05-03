@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Transcript Intelligence Dashboard</title>
+  <style>
+    body { margin: 0; font-family: Inter, Arial, sans-serif; background: #f7f4ed; color: #182322; }
+    header { padding: 42px 52px 24px; background: #183331; color: white; }
+    h1 { margin: 0; font-size: 42px; letter-spacing: 0; }
+    header p { max-width: 980px; color: #dbe7e3; font-size: 18px; line-height: 1.45; }
+    main { padding: 34px 52px 52px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+    article { background: white; border: 1px solid #d8d1c3; border-radius: 8px; padding: 18px; min-height: 140px; }
+    article h3 { margin: 0 0 16px; font-size: 18px; }
+    article strong { font-size: 42px; display: block; color: #2f6f73; }
+    article span { text-transform: uppercase; letter-spacing: .08em; color: #6a716c; font-size: 12px; }
+    section { margin-top: 34px; }
+    table { width: 100%; border-collapse: collapse; background: white; border: 1px solid #d8d1c3; }
+    th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid #e8e1d5; font-size: 14px; }
+    th { background: #eee7da; }
+    img { max-width: 100%; background: white; border: 1px solid #d8d1c3; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Transcript Intelligence</h1>
+    <p>Hybrid analysis of 100 call transcripts across support, customer, and internal conversations. The pipeline turns raw transcripts into theme, sentiment, product, and risk signals for product and engineering leaders.</p>
+  </header>
+  <main>
+    <div class="grid"><article><h3>Incident &amp; Reliability</h3><strong>28</strong><span>meetings</span><p>Avg risk 10 / sentiment 2.23</p></article>
+<article><h3>Compliance &amp; Audit</h3><strong>22</strong><span>meetings</span><p>Avg risk 7.59 / sentiment 4.37</p></article>
+<article><h3>Renewal &amp; Commercial Risk</h3><strong>17</strong><span>meetings</span><p>Avg risk 8.53 / sentiment 3.64</p></article>
+<article><h3>Product Feedback &amp; Roadmap</h3><strong>11</strong><span>meetings</span><p>Avg risk 8.36 / sentiment 3.74</p></article>
+<article><h3>Backup &amp; Recovery</h3><strong>8</strong><span>meetings</span><p>Avg risk 9.12 / sentiment 3.99</p></article>
+<article><h3>Identity &amp; Access</h3><strong>8</strong><span>meetings</span><p>Avg risk 8.62 / sentiment 3.89</p></article>
+<article><h3>Competitive &amp; Market</h3><strong>6</strong><span>meetings</span><p>Avg risk 10 / sentiment 2.82</p></article></div>
+    <section>
+      <h2>Theme Volume</h2>
+      <img src="theme_counts.svg" alt="Theme counts chart">
+    </section>
+    <section>
+      <h2>Highest Risk Meetings</h2>
+      <table><thead><tr><th>Meeting</th><th>Call type</th><th>Theme</th><th>Risk</th><th>Sentiment</th></tr></thead><tbody><tr><td>Support Case #3266 - Trailhead Marketplace Detect Alerts Not Firing</td><td>Customer support</td><td>Incident &amp; Reliability</td><td>10</td><td>1.4</td></tr>
+<tr><td>URGENT: Blackridge Investments - Complete Loss of Threat Visibility</td><td>Customer support</td><td>Incident &amp; Reliability</td><td>10</td><td>1.6</td></tr>
+<tr><td>Detect Outage - Customer Impact Assessment</td><td>Internal</td><td>Incident &amp; Reliability</td><td>10</td><td>1.8</td></tr>
+<tr><td>Detect Outage - Escalation Bridge</td><td>Internal</td><td>Incident &amp; Reliability</td><td>10</td><td>1.8</td></tr>
+<tr><td>INCIDENT: Detect Pipeline Failure - War Room</td><td>Internal</td><td>Incident &amp; Reliability</td><td>10</td><td>1.8</td></tr>
+<tr><td>URGENT: Cobalt Software - Aegis Detect Dashboard Down</td><td>Customer support</td><td>Incident &amp; Reliability</td><td>10</td><td>1.8</td></tr>
+<tr><td>Aegis / Northstar Pharma - Urgent: Detect Outage Impact</td><td>Customer support</td><td>Incident &amp; Reliability</td><td>10</td><td>2.1</td></tr>
+<tr><td>ESCALATION: Northstar Pharma - Detect Outage Impact on Compliance</td><td>Customer support</td><td>Incident &amp; Reliability</td><td>10</td><td>2.1</td></tr>
+<tr><td>Support Case #6573 - Ridgeline Logistics Detect Data Gaps</td><td>Customer support</td><td>Incident &amp; Reliability</td><td>10</td><td>2.1</td></tr>
+<tr><td>Protect Performance - Scalability Concerns</td><td>Internal</td><td>Incident &amp; Reliability</td><td>10</td><td>2.2</td></tr></tbody></table>
+    </section>
+  </main>
+</body>
+</html>
