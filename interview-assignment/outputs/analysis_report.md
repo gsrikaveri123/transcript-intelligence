@@ -9,7 +9,7 @@
 
 ## Approach
 
-I used a transparent hybrid pipeline rather than a black-box LLM pass. The provided summaries, topics, key moments, and utterance-level sentiment are used as semantic input. A rule-based scoring layer then classifies each meeting into call type, primary theme, product surface, and risk score. I also added a lightweight TF-IDF k-means clustering experiment as a discovery check: it helps show whether unsupervised text structure agrees with the business taxonomy, without requiring external APIs or heavy dependencies.
+I used a transparent hybrid pipeline rather than a black-box LLM pass. The provided summaries, topics, key moments, and utterance-level sentiment are used as semantic input. A rule-based scoring layer classifies each meeting into call type, primary theme, product surface, and risk score. I then added AI-system layers around that baseline: TF-IDF k-means clustering for unsupervised discovery, semantic retrieval for RAG-style evidence lookup, confidence scoring, a human-review queue, and a gold-label evaluation harness. The repo also includes an optional OpenAI embeddings path using `text-embedding-3-small`, an optional FastAPI review app, and unit tests for classifier/evaluation behavior.
 
 ## Theme Categories
 
@@ -66,6 +66,20 @@ Human review queue:
 
 - **Aegis / Meridian Capital - Service Reliability Discussion**: Incident & Reliability at 25% confidence, cluster `Outage`, risk 10/10
 
+## Semantic Retrieval and Production AI Path
+
+The repo includes two retrieval modes:
+
+- **Local TF-IDF retrieval:** always runs and writes `semantic_search_examples.csv/json`.
+- **Real embedding retrieval:** optional script `src/embedding_retrieval.py` calls OpenAI `text-embedding-3-small` when `OPENAI_API_KEY` is set; otherwise it writes `real_embedding_status.json` with a skipped status.
+
+This mirrors a production RAG pattern: embed transcript evidence, retrieve the most relevant calls for stakeholder questions, and constrain any future LLM-generated answer to cited transcript evidence.
+
+The repo also includes:
+
+- `src/app.py`: optional FastAPI review service with `/summary`, `/meetings`, `/search-examples`, and `/review-queue`.
+- `tests/test_pipeline.py`: unit tests for call-type inference, theme priority, product routing, gold-label metrics, and vector similarity.
+
 
 ## Gold-Label Evaluation
 
@@ -89,6 +103,7 @@ This is deliberately small, but it establishes the evaluation harness. The produ
 
 ## Limitations and Next Steps
 
-- The classifier is intentionally explainable. The included TF-IDF clustering is a lightweight experiment; in production, I would replace or augment it with embeddings or an LLM labeling step, then keep the rules as guardrails and audit checks.
+- The classifier is intentionally explainable. The included TF-IDF clustering/retrieval is the local baseline; the optional embedding script shows the production path for semantic search, and an LLM labeling/extraction layer could be added on top while keeping the rule layer as guardrails and audit checks.
 - Sentiment labels are sentence-level and do not distinguish politeness from business risk. The risk score corrects for this by incorporating escalations, action items, and negative operational terms.
 - Account and owner extraction could be made more precise with named entity recognition or CRM enrichment.
+- Product routing is the hardest current label because many calls mention several product surfaces; production should use utterance-level product attribution and reviewer-labeled training examples.
