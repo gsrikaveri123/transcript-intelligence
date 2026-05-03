@@ -20,10 +20,12 @@ From this folder:
 
 ```bash
 python3 src/analyze_transcripts.py --dataset dataset --output outputs
-python3 src/build_deck.py --outputs outputs --deliverables deliverables
+NODE_PATH=/Users/srikaveri/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules \
+  /Users/srikaveri/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node \
+  src/build_deck.js --outputs outputs --deliverables deliverables
 ```
 
-The pipeline has no required third-party Python dependencies. It uses the supplied JSON files directly.
+The analysis pipeline has no required third-party Python dependencies. It uses the supplied JSON files directly. The slide deck is generated with `pptxgenjs` from the bundled Codex runtime so it opens cleanly in PowerPoint.
 
 ## Approach
 
