@@ -1,0 +1,6 @@
+{
+  "status": "skipped",
+  "reason": "OPENAI_API_KEY is not set.",
+  "model": "text-embedding-3-small",
+  "note": "Set OPENAI_API_KEY to generate real embedding retrieval outputs."
+}

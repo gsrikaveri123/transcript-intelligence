@@ -93,12 +93,26 @@ Narration:
 Show:
 
 - `outputs/semantic_search_examples.csv`
+- `src/embedding_retrieval.py`
+- `outputs/real_embedding_status.json`
 - `outputs/evaluation_metrics.json`
 - `outputs/gold_label_evaluation.json`
 
 Say:
 
 "The evaluation layer reports theme confidence, cluster purity, a human-review queue, and a curated gold-label evaluation. That is important because transcript intelligence should route ambiguous customer conversations carefully rather than blindly automating every decision."
+
+Optional:
+
+Show `src/app.py` and say:
+
+"I also included an optional FastAPI review app. The core pipeline stays dependency-light, but the app demonstrates how this could become an interactive internal review service."
+
+Show tests:
+
+```bash
+python3 -m unittest discover -s tests -v
+```
 
 ## 8:00-9:30 — Close
 

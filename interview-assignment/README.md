@@ -27,6 +27,37 @@ NODE_PATH=/Users/srikaveri/.cache/codex-runtimes/codex-primary-runtime/dependenc
 
 The analysis pipeline has no required third-party Python dependencies. It uses the supplied JSON files directly. The slide deck is generated with `pptxgenjs` from the bundled Codex runtime so it opens cleanly in PowerPoint.
 
+Optional real embeddings:
+
+```bash
+OPENAI_API_KEY=your_key_here \
+  python3 src/embedding_retrieval.py \
+  --meetings outputs/meeting_analysis.json \
+  --output outputs
+```
+
+This uses OpenAI `text-embedding-3-small` by default. If `OPENAI_API_KEY` is not set, the script writes `outputs/real_embedding_status.json` with a skipped status so the repo remains reproducible.
+
+Optional FastAPI review app:
+
+```bash
+python3 -m pip install -r requirements-optional.txt
+uvicorn src.app:app --reload --app-dir .
+```
+
+Useful endpoints:
+
+- `GET /summary`
+- `GET /meetings?min_risk=8`
+- `GET /search-examples`
+- `GET /review-queue`
+
+Tests:
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
 ## Approach
 
 I used a transparent hybrid approach:
@@ -57,6 +88,7 @@ This is intentionally explainable for an interview panel. In production, I would
 - `outputs/product_summary.csv`: product-level risk signal.
 - `outputs/cluster_summary.csv`: dependency-free TF-IDF clustering experiment with top terms and dominant themes.
 - `outputs/semantic_search_examples.csv`: RAG-style evidence retrieval examples for stakeholder questions.
+- `outputs/real_embedding_status.json`: status for the optional real-embedding run.
 - `outputs/evaluation_metrics.json`: confidence, cluster purity, and human-review metrics.
 - `outputs/gold_label_evaluation.json`: labeled evaluation results for call type, theme, product, and risk routing.
 - `outputs/gold_label_evaluation.csv`: per-example gold-label predictions and errors.

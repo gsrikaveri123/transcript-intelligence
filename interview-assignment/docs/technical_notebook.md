@@ -92,8 +92,21 @@ See:
 
 - `outputs/semantic_search_examples.csv`
 - `outputs/semantic_search_examples.json`
+- `src/embedding_retrieval.py`
+- `outputs/real_embedding_status.json`
 
-In production, this would become a RAG workflow using embeddings, vector search, source citations, and LLM-generated summaries constrained to retrieved evidence.
+In production, this becomes a RAG workflow using embeddings, vector search, source citations, and LLM-generated summaries constrained to retrieved evidence. The repo now includes `src/embedding_retrieval.py`, which can call OpenAI `text-embedding-3-small` when `OPENAI_API_KEY` is set. Per OpenAI's official embeddings docs, embeddings are useful for search, clustering, recommendations, classification, and relatedness measurement; this implementation follows that pattern by embedding transcript evidence and stakeholder questions, then ranking by cosine similarity.
+
+## Optional FastAPI App
+
+The repo includes a lightweight FastAPI review app for interactive inspection:
+
+- `GET /summary`
+- `GET /meetings`
+- `GET /search-examples`
+- `GET /review-queue`
+
+This is intentionally optional so the core pipeline remains dependency-light. Install `requirements-optional.txt` to run it.
 
 ## Evaluation and Human Review
 
@@ -123,3 +136,19 @@ See:
 - Add an LLM labeling pass with confidence scores and explanation snippets.
 - Add entity extraction for account, competitor, product module, owner, and severity.
 - Connect output to CRM, ticketing, and roadmap systems so insight becomes workflow.
+
+## Tests
+
+The test suite covers:
+
+- Call-type inference.
+- Theme priority edge cases.
+- Product routing priority.
+- Gold-label evaluation metrics.
+- Embedding cosine-similarity behavior.
+
+Run:
+
+```bash
+python3 -m unittest discover -s tests -v
+```

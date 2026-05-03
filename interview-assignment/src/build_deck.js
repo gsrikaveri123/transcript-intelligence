@@ -282,6 +282,18 @@ function getType(name) {
 {
   const s = pptx.addSlide();
   addBg(s);
+  title(s, "Production extensions: real embeddings, API service, and tests");
+  card(s, "Embeddings", "OpenAI", "Optional real retrieval via text-embedding-3-small when OPENAI_API_KEY is set.", 0.75, 1.65, C.teal);
+  card(s, "API", "FastAPI", "Review endpoints for summary, meetings, retrieval examples, and human-review queue.", 4.85, 1.65, C.green);
+  card(s, "Tests", "6", "Unit coverage for classifier, routing, gold eval, and vector similarity behavior.", 8.95, 1.65, C.gold);
+  note(s, "Why this matters", "The repo remains easy to run locally, but the architecture now has clear production interfaces: swap TF-IDF retrieval for embeddings, expose review workflows through an API, and protect behavior with tests and gold-label regression checks.", 1.0, 3.55, 10.9, 2.0);
+  footer(s);
+}
+
+// Slide 12
+{
+  const s = pptx.addSlide();
+  addBg(s);
   title(s, "Three insight products would make this valuable beyond analysis");
   card(s, "Sales / CS", "1", "Revenue risk heatmap: renewal language + competitor mentions + negative sentiment.", 0.75, 1.8, C.teal);
   card(s, "Product", "2", "Product gap backlog: repeated pain points with quotes, accounts, and urgency.", 4.85, 1.8, C.gold);
@@ -301,7 +313,7 @@ function getType(name) {
   footer(s);
 }
 
-// Slide 12
+// Slide 13
 {
   const s = pptx.addSlide();
   addBg(s);
