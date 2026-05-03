@@ -9,7 +9,7 @@
 
 ## Approach
 
-I used a transparent hybrid pipeline rather than a black-box LLM pass. The provided summaries, topics, key moments, and utterance-level sentiment are used as semantic input. A rule-based scoring layer then classifies each meeting into call type, primary theme, product surface, and risk score. This is appropriate for the assessment dataset because it is explainable, reviewable, and easy to evolve into an LLM-assisted classifier later.
+I used a transparent hybrid pipeline rather than a black-box LLM pass. The provided summaries, topics, key moments, and utterance-level sentiment are used as semantic input. A rule-based scoring layer then classifies each meeting into call type, primary theme, product surface, and risk score. I also added a lightweight TF-IDF k-means clustering experiment as a discovery check: it helps show whether unsupervised text structure agrees with the business taxonomy, without requiring external APIs or heavy dependencies.
 
 ## Theme Categories
 
@@ -40,6 +40,20 @@ I used a transparent hybrid pipeline rather than a black-box LLM pass. The provi
 - **INCIDENT: Detect Pipeline Failure - War Room** (Internal, Incident & Reliability): risk 10/10, sentiment 1.8. A critical outage call was convened to address a complete failure of the Detect event processing pipeline that began around 9:14 AM Pacific. The ingestion pipeline's single primary node hit a memory ceiling and crashed due to lack of redundancy, a known tech d
 - **URGENT: Cobalt Software - Aegis Detect Dashboard Down** (Customer support, Incident & Reliability): risk 10/10, sentiment 1.8. Lauren Bishop, VP of Infrastructure at Cobalt Software, called Aegis Cloud Security support reporting that their Aegis Detect dashboard was completely down with no threat visibility for nearly an hour. David Kim investigated and confirmed a platform-wide casca
 
+## ML Discovery Experiment: TF-IDF Clusters
+
+The clustering layer is not the production classifier; it is an exploratory check. It groups meetings by unsupervised text similarity, then compares each cluster to the hand-labeled business theme. This is useful for finding emerging pockets of language that rules might miss.
+
+| Cluster | Meetings | Top terms | Dominant business theme | Avg risk |
+|---:|---:|---|---|---:|
+| 5 | 21 | pci, dss, pci dss, hipaa, soc, iso, comply, reporting | Compliance & Audit | 7.57 |
+| 2 | 18 | failure, outage, pipeline, single, sprint, single point, point failure, ingestion | Incident & Reliability | 9.61 |
+| 6 | 18 | renewal, pricing, comply, contract, backup, compliance, march, protect | Renewal & Commercial Risk | 8.28 |
+| 0 | 13 | outage, post, incident, march, reliability, post incident, detect, nodes | Incident & Reliability | 9.77 |
+| 1 | 13 | mfa, identity, sso, okta, policy, provisioning, scim, sync | Identity & Access | 9.15 |
+| 4 | 13 | data, platform, backup, event, detect, failure, outage, issue | Incident & Reliability | 9.62 |
+| 3 | 4 | control, feedback, gaps, role, pain, management, training, security training | Product Feedback & Roadmap | 8.5 |
+
 ## Additional Insight Ideas
 
 1. **Revenue risk heatmap for sales and CS leaders.** Combine renewal language, competitor mentions, negative sentiment, and account names to flag customers where product friction is turning into commercial risk.
@@ -49,6 +63,6 @@ I used a transparent hybrid pipeline rather than a black-box LLM pass. The provi
 
 ## Limitations and Next Steps
 
-- The classifier is intentionally explainable. In production, I would add embedding clustering or an LLM labeling step, then keep the rules as guardrails and audit checks.
+- The classifier is intentionally explainable. The included TF-IDF clustering is a lightweight experiment; in production, I would replace or augment it with embeddings or an LLM labeling step, then keep the rules as guardrails and audit checks.
 - Sentiment labels are sentence-level and do not distinguish politeness from business risk. The risk score corrects for this by incorporating escalations, action items, and negative operational terms.
 - Account and owner extraction could be made more precise with named entity recognition or CRM enrichment.

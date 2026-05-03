@@ -21,6 +21,7 @@ import csv
 import html
 import json
 import math
+import re
 import statistics
 from collections import Counter, defaultdict
 from dataclasses import dataclass, asdict
@@ -161,6 +162,82 @@ class MeetingAnalysis:
     topics: str
     summary: str
     example_quote: str
+    cluster_id: int = -1
+    cluster_terms: str = ""
+    cluster_label: str = ""
+
+
+STOPWORDS = {
+    "a",
+    "about",
+    "across",
+    "after",
+    "again",
+    "aegis",
+    "aegiscloud",
+    "all",
+    "also",
+    "an",
+    "and",
+    "are",
+    "as",
+    "at",
+    "be",
+    "because",
+    "been",
+    "but",
+    "by",
+    "call",
+    "calls",
+    "can",
+    "case",
+    "customer",
+    "customers",
+    "for",
+    "from",
+    "had",
+    "has",
+    "have",
+    "in",
+    "into",
+    "is",
+    "it",
+    "meeting",
+    "more",
+    "not",
+    "of",
+    "on",
+    "or",
+    "our",
+    "out",
+    "over",
+    "review",
+    "so",
+    "support",
+    "that",
+    "the",
+    "their",
+    "there",
+    "they",
+    "this",
+    "to",
+    "was",
+    "we",
+    "with",
+    "would",
+    # Frequent participant/customer first names add noise to unsupervised terms.
+    "alex",
+    "david",
+    "emily",
+    "jordan",
+    "marcus",
+    "maria",
+    "sarah",
+    "thomas",
+    "tom",
+    "victor",
+    "wayne",
+}
 
 
 def load_json(path: Path) -> Any:
@@ -320,6 +397,114 @@ def analyze_meeting(folder: Path) -> MeetingAnalysis:
     )
 
 
+def tokenize(text: str) -> list[str]:
+    words = re.findall(r"[a-z][a-z0-9]+", text.lower())
+    unigrams = [w for w in words if len(w) > 2 and w not in STOPWORDS]
+    bigrams = [f"{a}_{b}" for a, b in zip(unigrams, unigrams[1:]) if a != b]
+    return unigrams + bigrams
+
+
+def cosine_distance(a: dict[str, float], b: dict[str, float]) -> float:
+    dot = sum(value * b.get(term, 0.0) for term, value in a.items())
+    norm_a = math.sqrt(sum(value * value for value in a.values()))
+    norm_b = math.sqrt(sum(value * value for value in b.values()))
+    if norm_a == 0 or norm_b == 0:
+        return 1.0
+    return 1.0 - dot / (norm_a * norm_b)
+
+
+def mean_vector(vectors: list[dict[str, float]]) -> dict[str, float]:
+    if not vectors:
+        return {}
+    totals: Counter = Counter()
+    for vector in vectors:
+        totals.update(vector)
+    return {term: value / len(vectors) for term, value in totals.items()}
+
+
+def tfidf_vectors(rows: list[MeetingAnalysis]) -> list[dict[str, float]]:
+    docs = [tokenize(f"{row.title} {row.topics} {row.summary} {row.example_quote}") for row in rows]
+    df: Counter = Counter()
+    for tokens in docs:
+        df.update(set(tokens))
+    total_docs = len(docs)
+    vectors: list[dict[str, float]] = []
+    for tokens in docs:
+        counts = Counter(tokens)
+        max_count = max(counts.values() or [1])
+        vector = {}
+        for term, count in counts.items():
+            tf = count / max_count
+            idf = math.log((1 + total_docs) / (1 + df[term])) + 1
+            vector[term] = tf * idf
+        vectors.append(vector)
+    return vectors
+
+
+def add_discovery_clusters(rows: list[MeetingAnalysis], cluster_count: int = 7) -> list[dict[str, Any]]:
+    """Cluster meetings with a tiny deterministic TF-IDF k-means experiment.
+
+    This is not meant to beat a mature embedding model. It is a dependency-free
+    discovery check that shows whether unsupervised text structure roughly
+    agrees with, or challenges, the hand-built business taxonomy.
+    """
+    if not rows:
+        return []
+
+    k = min(cluster_count, max(2, int(math.sqrt(len(rows)))))
+    vectors = tfidf_vectors(rows)
+
+    # Deterministic initialization: spread seeds across the sorted corpus.
+    seed_indexes = [round(i * (len(rows) - 1) / max(k - 1, 1)) for i in range(k)]
+    centers = [vectors[index] for index in seed_indexes]
+    assignments = [0] * len(rows)
+
+    for _ in range(20):
+        changed = False
+        for i, vector in enumerate(vectors):
+            best_cluster = min(range(k), key=lambda cluster: cosine_distance(vector, centers[cluster]))
+            if assignments[i] != best_cluster:
+                assignments[i] = best_cluster
+                changed = True
+        grouped_vectors = [[vectors[i] for i, cluster in enumerate(assignments) if cluster == c] for c in range(k)]
+        centers = [mean_vector(group) if group else centers[c] for c, group in enumerate(grouped_vectors)]
+        if not changed:
+            break
+
+    cluster_summaries: list[dict[str, Any]] = []
+    for cluster in range(k):
+        indexes = [i for i, assigned in enumerate(assignments) if assigned == cluster]
+        if not indexes:
+            continue
+        center = centers[cluster]
+        top_terms = [
+            term.replace("_", " ")
+            for term, _ in sorted(center.items(), key=lambda item: item[1], reverse=True)[:8]
+        ]
+        theme_counts = Counter(rows[i].primary_theme for i in indexes)
+        call_type_counts = Counter(rows[i].call_type for i in indexes)
+        label = top_terms[0].title() if top_terms else f"Cluster {cluster}"
+        for i in indexes:
+            rows[i].cluster_id = cluster
+            rows[i].cluster_terms = ", ".join(top_terms)
+            rows[i].cluster_label = label
+        cluster_rows = [rows[i] for i in indexes]
+        cluster_summaries.append(
+            {
+                "cluster_id": cluster,
+                "cluster_label": label,
+                "meetings": len(indexes),
+                "top_terms": ", ".join(top_terms),
+                "dominant_theme": theme_counts.most_common(1)[0][0],
+                "dominant_call_type": call_type_counts.most_common(1)[0][0],
+                "avg_sentiment_score": round(statistics.mean(row.sentiment_score for row in cluster_rows), 2),
+                "avg_risk_score": round(statistics.mean(row.risk_score for row in cluster_rows), 2),
+                "example_meetings": [row.title for row in cluster_rows[:3]],
+            }
+        )
+    return sorted(cluster_summaries, key=lambda row: (-row["meetings"], row["cluster_id"]))
+
+
 def aggregate(rows: list[MeetingAnalysis]) -> dict[str, Any]:
     by_type: dict[str, list[MeetingAnalysis]] = defaultdict(list)
     by_theme: dict[str, list[MeetingAnalysis]] = defaultdict(list)
@@ -407,7 +592,7 @@ def bar_svg(items: list[tuple[str, float]], title: str, path: Path, color: str =
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def write_markdown_report(rows: list[MeetingAnalysis], summary: dict[str, Any], path: Path) -> None:
+def write_markdown_report(rows: list[MeetingAnalysis], summary: dict[str, Any], cluster_summary: list[dict[str, Any]], path: Path) -> None:
     theme_lines = []
     for item in summary["theme_summary"]:
         examples = "; ".join(item["example_meetings"])
@@ -425,6 +610,11 @@ def write_markdown_report(rows: list[MeetingAnalysis], summary: dict[str, Any], 
         for item in summary["highest_risk_meetings"][:6]
     )
 
+    cluster_lines = [
+        f"| {item['cluster_id']} | {item['meetings']} | {item['top_terms']} | {item['dominant_theme']} | {item['avg_risk_score']} |"
+        for item in cluster_summary
+    ]
+
     content = f"""# Transcript Intelligence Analysis
 
 ## Executive Takeaways
@@ -436,7 +626,7 @@ def write_markdown_report(rows: list[MeetingAnalysis], summary: dict[str, Any], 
 
 ## Approach
 
-I used a transparent hybrid pipeline rather than a black-box LLM pass. The provided summaries, topics, key moments, and utterance-level sentiment are used as semantic input. A rule-based scoring layer then classifies each meeting into call type, primary theme, product surface, and risk score. This is appropriate for the assessment dataset because it is explainable, reviewable, and easy to evolve into an LLM-assisted classifier later.
+I used a transparent hybrid pipeline rather than a black-box LLM pass. The provided summaries, topics, key moments, and utterance-level sentiment are used as semantic input. A rule-based scoring layer then classifies each meeting into call type, primary theme, product surface, and risk score. I also added a lightweight TF-IDF k-means clustering experiment as a discovery check: it helps show whether unsupervised text structure agrees with the business taxonomy, without requiring external APIs or heavy dependencies.
 
 ## Theme Categories
 
@@ -454,6 +644,14 @@ I used a transparent hybrid pipeline rather than a black-box LLM pass. The provi
 
 {high_risk}
 
+## ML Discovery Experiment: TF-IDF Clusters
+
+The clustering layer is not the production classifier; it is an exploratory check. It groups meetings by unsupervised text similarity, then compares each cluster to the hand-labeled business theme. This is useful for finding emerging pockets of language that rules might miss.
+
+| Cluster | Meetings | Top terms | Dominant business theme | Avg risk |
+|---:|---:|---|---|---:|
+{chr(10).join(cluster_lines)}
+
 ## Additional Insight Ideas
 
 1. **Revenue risk heatmap for sales and CS leaders.** Combine renewal language, competitor mentions, negative sentiment, and account names to flag customers where product friction is turning into commercial risk.
@@ -463,7 +661,7 @@ I used a transparent hybrid pipeline rather than a black-box LLM pass. The provi
 
 ## Limitations and Next Steps
 
-- The classifier is intentionally explainable. In production, I would add embedding clustering or an LLM labeling step, then keep the rules as guardrails and audit checks.
+- The classifier is intentionally explainable. The included TF-IDF clustering is a lightweight experiment; in production, I would replace or augment it with embeddings or an LLM labeling step, then keep the rules as guardrails and audit checks.
 - Sentiment labels are sentence-level and do not distinguish politeness from business risk. The risk score corrects for this by incorporating escalations, action items, and negative operational terms.
 - Account and owner extraction could be made more precise with named entity recognition or CRM enrichment.
 """
@@ -532,15 +730,18 @@ def main() -> None:
     args.output.mkdir(parents=True, exist_ok=True)
 
     rows = [analyze_meeting(folder) for folder in sorted(args.dataset.iterdir()) if folder.is_dir()]
+    cluster_summary = add_discovery_clusters(rows)
     summary = aggregate(rows)
 
     row_dicts = [asdict(row) for row in rows]
     write_csv(row_dicts, args.output / "meeting_analysis.csv")
     (args.output / "meeting_analysis.json").write_text(json.dumps(row_dicts, indent=2), encoding="utf-8")
     (args.output / "summary_metrics.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    (args.output / "cluster_summary.json").write_text(json.dumps(cluster_summary, indent=2), encoding="utf-8")
     write_csv(summary["theme_summary"], args.output / "theme_summary.csv")
     write_csv(summary["call_type_summary"], args.output / "call_type_summary.csv")
     write_csv(summary["product_summary"], args.output / "product_summary.csv")
+    write_csv(cluster_summary, args.output / "cluster_summary.csv")
 
     bar_svg([(x["theme"], x["meetings"]) for x in summary["theme_summary"]], "Meetings by Primary Theme", args.output / "theme_counts.svg")
     bar_svg(
@@ -555,7 +756,13 @@ def main() -> None:
         args.output / "product_risk.svg",
         color="#C48A2C",
     )
-    write_markdown_report(rows, summary, args.output / "analysis_report.md")
+    bar_svg(
+        [(f"C{x['cluster_id']}: {x['cluster_label']}", x["meetings"]) for x in cluster_summary],
+        "Unsupervised TF-IDF Cluster Sizes",
+        args.output / "cluster_counts.svg",
+        color="#4F7B58",
+    )
+    write_markdown_report(rows, summary, cluster_summary, args.output / "analysis_report.md")
     write_html_dashboard(rows, summary, args.output / "dashboard.html")
 
     print(f"Analyzed {len(rows)} meetings")

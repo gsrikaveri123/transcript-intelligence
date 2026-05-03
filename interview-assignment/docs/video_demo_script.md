@@ -44,6 +44,7 @@ Narration:
 Show:
 
 - Theme volume
+- TF-IDF cluster summary
 - Highest-risk meeting table
 - `outputs/call_type_summary.csv`
 
@@ -80,10 +81,11 @@ Show:
 - `top_two_theme`
 - `sentiment_from_transcript`
 - `risk_score`
+- `add_discovery_clusters`
 
 Narration:
 
-"The important technical decision is transparency. I wanted a pipeline where every label can be explained. If a stakeholder challenges a category, we can inspect the source text and the rule. In production, I would add embeddings or LLM labeling and measure agreement against this explainable baseline."
+"The important technical decision is transparency. I wanted a pipeline where every label can be explained. If a stakeholder challenges a category, we can inspect the source text and the rule. I also added a lightweight TF-IDF k-means clustering experiment to show discovery beyond hand-written rules. In production, I would replace that with embeddings or LLM labeling and measure agreement against this explainable baseline."
 
 ## 8:00-9:30 — Close
 

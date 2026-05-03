@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="520" viewBox="0 0 980 520">
+<rect width="100%" height="100%" fill="#F7F4ED"/>
+<text x="40" y="44" font-family="Arial" font-size="28" font-weight="700" fill="#182322">Unsupervised TF-IDF Cluster Sizes</text>
+<text x="40" y="104" font-family="Arial" font-size="17" fill="#243130">C5: Pci</text>
+<rect x="260" y="80" width="630.0" height="34" rx="4" fill="#4F7B58"/>
+<text x="902.0" y="104" font-family="Arial" font-size="17" font-weight="700" fill="#243130">21</text>
+<text x="40" y="156" font-family="Arial" font-size="17" fill="#243130">C2: Failure</text>
+<rect x="260" y="132" width="540.0" height="34" rx="4" fill="#4F7B58"/>
+<text x="812.0" y="156" font-family="Arial" font-size="17" font-weight="700" fill="#243130">18</text>
+<text x="40" y="208" font-family="Arial" font-size="17" fill="#243130">C6: Renewal</text>
+<rect x="260" y="184" width="540.0" height="34" rx="4" fill="#4F7B58"/>
+<text x="812.0" y="208" font-family="Arial" font-size="17" font-weight="700" fill="#243130">18</text>
+<text x="40" y="260" font-family="Arial" font-size="17" fill="#243130">C0: Outage</text>
+<rect x="260" y="236" width="390.0" height="34" rx="4" fill="#4F7B58"/>
+<text x="662.0" y="260" font-family="Arial" font-size="17" font-weight="700" fill="#243130">13</text>
+<text x="40" y="312" font-family="Arial" font-size="17" fill="#243130">C1: Mfa</text>
+<rect x="260" y="288" width="390.0" height="34" rx="4" fill="#4F7B58"/>
+<text x="662.0" y="312" font-family="Arial" font-size="17" font-weight="700" fill="#243130">13</text>
+<text x="40" y="364" font-family="Arial" font-size="17" fill="#243130">C4: Data</text>
+<rect x="260" y="340" width="390.0" height="34" rx="4" fill="#4F7B58"/>
+<text x="662.0" y="364" font-family="Arial" font-size="17" font-weight="700" fill="#243130">13</text>
+<text x="40" y="416" font-family="Arial" font-size="17" fill="#243130">C3: Control</text>
+<rect x="260" y="392" width="120.0" height="34" rx="4" fill="#4F7B58"/>
+<text x="392.0" y="416" font-family="Arial" font-size="17" font-weight="700" fill="#243130">4</text>
+</svg>

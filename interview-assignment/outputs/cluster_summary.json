@@ -1,0 +1,107 @@
+[
+  {
+    "cluster_id": 5,
+    "cluster_label": "Pci",
+    "meetings": 21,
+    "top_terms": "pci, dss, pci dss, hipaa, soc, iso, comply, reporting",
+    "dominant_theme": "Compliance & Audit",
+    "dominant_call_type": "External customer",
+    "avg_sentiment_score": 4.45,
+    "avg_risk_score": 7.57,
+    "example_meetings": [
+      "Aegis / Redwood Clinical - ISO 27001 Preparation",
+      "Comply v2 - Launch Readiness Review",
+      "Aegis / Stratos Cloud - Audit Preparation"
+    ]
+  },
+  {
+    "cluster_id": 2,
+    "cluster_label": "Failure",
+    "meetings": 18,
+    "top_terms": "failure, outage, pipeline, single, sprint, single point, point failure, ingestion",
+    "dominant_theme": "Incident & Reliability",
+    "dominant_call_type": "Internal",
+    "avg_sentiment_score": 2.63,
+    "avg_risk_score": 9.61,
+    "example_meetings": [
+      "Weekly Engineering Standup",
+      "Support Case #6977 - Brightpath Commerce Slow Backup Performance",
+      "Detect Outage - Customer Impact Assessment"
+    ]
+  },
+  {
+    "cluster_id": 6,
+    "cluster_label": "Renewal",
+    "meetings": 18,
+    "top_terms": "renewal, pricing, comply, contract, backup, compliance, march, protect",
+    "dominant_theme": "Renewal & Commercial Risk",
+    "dominant_call_type": "External customer",
+    "avg_sentiment_score": 3.87,
+    "avg_risk_score": 8.28,
+    "example_meetings": [
+      "Support Case #9279 - Summit Trust Billing Inquiry",
+      "Aegis / Cobalt Software - Q2 Planning",
+      "Aegis / Atlas Precision - Contract Discussion"
+    ]
+  },
+  {
+    "cluster_id": 0,
+    "cluster_label": "Outage",
+    "meetings": 13,
+    "top_terms": "outage, post, incident, march, reliability, post incident, detect, nodes",
+    "dominant_theme": "Incident & Reliability",
+    "dominant_call_type": "Internal",
+    "avg_sentiment_score": 3.02,
+    "avg_risk_score": 9.77,
+    "example_meetings": [
+      "Detect Outage - Remediation Plan Review",
+      "Aegis / Meridian Capital - Service Reliability Discussion",
+      "Competitive Threat Assessment - Post Outage"
+    ]
+  },
+  {
+    "cluster_id": 1,
+    "cluster_label": "Mfa",
+    "meetings": 13,
+    "top_terms": "mfa, identity, sso, okta, policy, provisioning, scim, sync",
+    "dominant_theme": "Identity & Access",
+    "dominant_call_type": "Internal",
+    "avg_sentiment_score": 3.46,
+    "avg_risk_score": 9.15,
+    "example_meetings": [
+      "Identity Team - Q2 Roadmap",
+      "Identity Team - Sprint Retro",
+      "Aegis / Harborview Banking - Threat Detection Tuning"
+    ]
+  },
+  {
+    "cluster_id": 4,
+    "cluster_label": "Data",
+    "meetings": 13,
+    "top_terms": "data, platform, backup, event, detect, failure, outage, issue",
+    "dominant_theme": "Incident & Reliability",
+    "dominant_call_type": "Customer support",
+    "avg_sentiment_score": 2.52,
+    "avg_risk_score": 9.62,
+    "example_meetings": [
+      "Support Case #5889 - Ridgeline Logistics Detect Latency Issues",
+      "Support Case #3536 - Stratos Cloud LogVault Integration Timeout",
+      "Support Case #8749 - Coastal Living Co SAML Certificate Rotation Bug"
+    ]
+  },
+  {
+    "cluster_id": 3,
+    "cluster_label": "Control",
+    "meetings": 4,
+    "top_terms": "control, feedback, gaps, role, pain, management, training, security training",
+    "dominant_theme": "Product Feedback & Roadmap",
+    "dominant_call_type": "External customer",
+    "avg_sentiment_score": 3.55,
+    "avg_risk_score": 8.5,
+    "example_meetings": [
+      "SOC 2 Audit Preparation - Internal",
+      "Support Case #2638 - Pineridge Systems CloudPrime S3 Backup Connector",
+      "Aegis / Redwood Clinical - Product Feedback Session"
+    ]
+  }
+]

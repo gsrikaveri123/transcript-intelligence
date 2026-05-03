@@ -36,6 +36,7 @@ For each meeting, the pipeline creates:
 - `negative_utterance_share` and `positive_utterance_share`.
 - `risk_score`: 0-10 heuristic combining escalation language, negative utterances, and action-item load.
 - `example_quote`: evidence quote selected from the transcript.
+- `cluster_id`, `cluster_terms`, `cluster_label`: lightweight TF-IDF k-means discovery output.
 
 ## Theme Taxonomy
 
@@ -59,6 +60,21 @@ See:
 - `outputs/analysis_report.md`
 
 The strongest pattern is that reliability is the highest-risk theme even when it is not the largest theme. It shows up across support tickets, customer impact calls, internal post-incident work, and competitive conversations.
+
+## ML Experimentation
+
+The pipeline includes a dependency-free TF-IDF k-means clustering experiment. This is intentionally positioned as discovery, not the source of truth. It groups meetings by text similarity using titles, topics, summaries, and evidence quotes, then reports top terms and the dominant hand-labeled theme for each cluster.
+
+The value of this section is twofold:
+
+- It shows whether unsupervised language patterns broadly support the chosen taxonomy.
+- It reveals pockets of language that a purely rule-based classifier might miss or over-generalize.
+
+See:
+
+- `outputs/cluster_summary.csv`
+- `outputs/cluster_summary.json`
+- `outputs/cluster_counts.svg`
 
 ## Production Next Steps
 

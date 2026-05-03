@@ -11,6 +11,10 @@ const deliverablesDir = process.argv.includes("--deliverables")
   : "deliverables";
 
 const summary = JSON.parse(fs.readFileSync(path.join(outputsDir, "summary_metrics.json"), "utf8"));
+const clusterSummaryPath = path.join(outputsDir, "cluster_summary.json");
+const clusterSummary = fs.existsSync(clusterSummaryPath)
+  ? JSON.parse(fs.readFileSync(clusterSummaryPath, "utf8"))
+  : [];
 fs.mkdirSync(deliverablesDir, { recursive: true });
 
 const pptx = new pptxgen();
@@ -236,6 +240,16 @@ function getType(name) {
 {
   const s = pptx.addSlide();
   addBg(s);
+  title(s, "A lightweight clustering experiment validates and challenges the taxonomy");
+  barChart(s, clusterSummary.map((x) => [`C${x.cluster_id}: ${x.cluster_label}`, x.meetings]), 0.75, 1.65, 6.9, 4.3, C.green);
+  note(s, "What the experiment adds", "The pipeline includes a dependency-free TF-IDF k-means pass. It is not the production classifier; it is a discovery check that groups similar meetings and compares each cluster with the hand-labeled business theme. The result gives reviewers evidence that the taxonomy was tested, not only asserted.", 8.15, 1.75, 3.8, 2.9);
+  footer(s);
+}
+
+// Slide 9
+{
+  const s = pptx.addSlide();
+  addBg(s);
   title(s, "Three insight products would make this valuable beyond analysis");
   card(s, "Sales / CS", "1", "Revenue risk heatmap: renewal language + competitor mentions + negative sentiment.", 0.75, 1.8, C.teal);
   card(s, "Product", "2", "Product gap backlog: repeated pain points with quotes, accounts, and urgency.", 4.85, 1.8, C.gold);
@@ -255,7 +269,7 @@ function getType(name) {
   footer(s);
 }
 
-// Slide 9
+// Slide 10
 {
   const s = pptx.addSlide();
   addBg(s);

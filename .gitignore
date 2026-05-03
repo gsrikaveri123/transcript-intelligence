@@ -3,3 +3,4 @@ __MACOSX/
 *.pyc
 __pycache__/
 .ipynb_checkpoints/
+~$*.pptx

@@ -34,8 +34,9 @@ I used a transparent hybrid approach:
 1. Read each meeting folder and combine the transcript, summary, topics, key moments, and action items.
 2. Classify each meeting by call type: customer support, external customer, or internal.
 3. Score each meeting into one primary business theme and product surface using explainable keyword rules.
-4. Aggregate utterance-level sentiment, provided meeting sentiment, action items, and risk signals.
-5. Generate CSV/JSON outputs, an HTML dashboard, SVG charts, a written report, and a PowerPoint deck.
+4. Run a lightweight TF-IDF k-means clustering experiment to test whether unsupervised text structure agrees with the business taxonomy.
+5. Aggregate utterance-level sentiment, provided meeting sentiment, action items, and risk signals.
+6. Generate CSV/JSON outputs, an HTML dashboard, SVG charts, a written report, and a PowerPoint deck.
 
 This is intentionally explainable for an interview panel. In production, I would add embedding clustering or LLM-assisted labeling, then keep the rule layer as an audit and routing guardrail.
 
@@ -51,6 +52,7 @@ This is intentionally explainable for an interview panel. In production, I would
 - `outputs/theme_summary.csv`: theme counts, average sentiment, risk, and example meetings.
 - `outputs/call_type_summary.csv`: sentiment and risk by support, external, and internal calls.
 - `outputs/product_summary.csv`: product-level risk signal.
+- `outputs/cluster_summary.csv`: dependency-free TF-IDF clustering experiment with top terms and dominant themes.
 - `outputs/meeting_analysis.csv`: meeting-level detail for Q&A and drill-down.
 - `outputs/dashboard.html`: simple browser dashboard for the demo walkthrough.
 
