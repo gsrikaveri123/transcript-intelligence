@@ -234,6 +234,7 @@ function getType(name) {
   s.addShape(pptx.ShapeType.arc, { x: 9.15, y: 1.25, w: 3.15, h: 3.15, line: { color: C.gold, transparency: 20, width: 2 }, adjustPoint: 0.65 });
   s.addText("Transcript\nIntelligence", { x: 0.72, y: 0.75, w: 6.8, h: 1.45, fontFace: "Aptos Display", fontSize: 42, bold: true, color: C.white, margin: 0, breakLine: false, fit: "shrink" });
   s.addText("A leadership-ready AI analysis of 100 enterprise call transcripts", { x: 0.76, y: 2.42, w: 6.8, h: 0.42, fontSize: 18, color: "DCE9E5", margin: 0, fit: "shrink" });
+  s.addText("Prepared by Srikaveri Gude", { x: 0.76, y: 2.95, w: 3.3, h: 0.28, fontSize: 11, bold: true, color: C.gold, margin: 0 });
   pill(s, "Explainable baseline", 0.76, 3.15, 1.85, C.teal);
   pill(s, "Retrieval + evaluation", 2.8, 3.15, 2.1, C.gold);
   pill(s, "Production path", 5.08, 3.15, 1.6, C.green);
