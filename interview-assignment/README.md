@@ -4,15 +4,17 @@ This repository contains a complete, reproducible analysis of the provided trans
 
 ## Deliverables
 
-- Leadership slide deck: `deliverables/Transcript_Intelligence_Leadership_Deck.pptx`
 - Technical pipeline and reference material:
   - `src/analyze_transcripts.py`
-  - `src/build_deck.py`
+  - `src/embedding_retrieval.py`
+  - `src/app.py`
   - `outputs/analysis_report.md`
   - `outputs/dashboard.html`
   - `outputs/meeting_analysis.csv`
   - `outputs/summary_metrics.json`
 - Video demo support: `docs/video_demo_script.md`
+
+The stakeholder slide deck and video recording are submitted separately from this code repository.
 
 ## How to Run
 
@@ -20,12 +22,9 @@ From this folder:
 
 ```bash
 python3 src/analyze_transcripts.py --dataset dataset --output outputs
-NODE_PATH=/Users/srikaveri/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules \
-  /Users/srikaveri/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node \
-  src/build_deck.js --outputs outputs --deliverables deliverables
 ```
 
-The analysis pipeline has no required third-party Python dependencies. It uses the supplied JSON files directly. The slide deck is generated with `pptxgenjs` from the bundled Codex runtime so it opens cleanly in PowerPoint.
+The analysis pipeline has no required third-party Python dependencies. It uses the supplied JSON files directly.
 
 Optional real embeddings:
 
@@ -70,7 +69,7 @@ I used a transparent hybrid approach:
 6. Generate AI evaluation signals: taxonomy confidence, cluster purity, and a human-review queue.
 7. Evaluate the pipeline against a curated gold-label sample with accuracy and high-risk precision/recall/F1.
 8. Aggregate utterance-level sentiment, provided meeting sentiment, action items, and risk signals.
-9. Generate CSV/JSON outputs, an HTML dashboard, SVG charts, a written report, and a PowerPoint deck.
+9. Generate CSV/JSON outputs, an HTML dashboard, SVG charts, and a written report.
 
 This is intentionally explainable for an interview panel. In production, I would add embedding clustering or LLM-assisted labeling, then keep the rule layer as an audit and routing guardrail.
 
@@ -98,4 +97,4 @@ This is intentionally explainable for an interview panel. In production, I would
 
 ## Notes
 
-The original assignment PDF is included as received. The dataset is unchanged; the pipeline only adds derived outputs under `outputs/` and `deliverables/`.
+The original assignment PDF is included as received. The dataset is unchanged; the pipeline only adds derived outputs under `outputs/`.

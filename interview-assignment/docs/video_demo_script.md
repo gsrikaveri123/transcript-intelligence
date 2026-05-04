@@ -10,7 +10,7 @@ Show:
 - `dataset/`
 - `src/`
 - `outputs/`
-- `deliverables/`
+- separately attached stakeholder deck
 
 ## 0:45-2:15 — Run the Pipeline
 
@@ -58,7 +58,7 @@ Call out:
 
 Open:
 
-- `deliverables/Transcript_Intelligence_Leadership_Deck.pptx`
+- separately attached stakeholder presentation
 
 Narration:
 
