@@ -417,14 +417,14 @@ function getType(name) {
     "Convert repeated product gaps into owner-ready roadmap items with transcript evidence.",
     "Adopt a human-in-the-loop governance model before automating customer-impacting actions.",
   ], 0.9, 1.85, 6.4, 2.4, 18);
-  rect(s, 8.0, 1.8, 3.6, 3.4, C.white, C.line);
-  s.addText("Decision asks", { x: 8.35, y: 2.1, w: 2.2, h: 0.3, fontSize: 18, bold: true, color: C.ink, margin: 0 });
-  s.addText("1. Assign an executive owner for Detect reliability signals\n2. Align Product, CS, and Engineering on risk thresholds\n3. Expand gold-label evaluation before production routing\n4. Pilot retrieval-backed account reviews with CS leaders", {
-    x: 8.35,
-    y: 2.65,
-    w: 2.8,
-    h: 1.7,
-    fontSize: 15,
+  rect(s, 7.75, 1.72, 4.15, 4.05, C.white, C.line);
+  s.addText("Decision asks", { x: 8.08, y: 2.02, w: 3.05, h: 0.34, fontSize: 17, bold: true, color: C.ink, margin: 0 });
+  s.addText("Owner: Detect reliability signal\n\nThresholds: Product, CS, and Engineering\n\nEval: expand gold-label coverage\n\nPilot: retrieval-backed CS reviews", {
+    x: 8.08,
+    y: 2.72,
+    w: 3.45,
+    h: 2.25,
+    fontSize: 13,
     color: C.ink,
     margin: 0,
     fit: "shrink",
