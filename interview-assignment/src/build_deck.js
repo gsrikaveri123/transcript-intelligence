@@ -386,11 +386,11 @@ function getType(name) {
   const s = pptx.addSlide();
   addBg(s);
   chapter(s, 11, "Products");
-  title(s, "Three insight products would make this valuable beyond analysis");
-  card(s, "Sales / CS", "1", "Revenue risk heatmap: renewal language + competitor mentions + negative sentiment.", 0.75, 1.8, C.teal);
-  card(s, "Product", "2", "Product gap backlog: repeated pain points with quotes, accounts, and urgency.", 4.85, 1.8, C.gold);
-  card(s, "Engineering", "3", "Incident learning loop: connect support pain to post-incident and sprint-planning follow-through.", 8.95, 1.8, C.green);
-  s.addText("These are stakeholder workflows, not charts. The product should help each leader decide what to do next and where to look for evidence.", {
+  title(s, "I translated transcript analysis into three AI-enabled operating workflows");
+  card(s, "Sales / CS", "1", "Revenue risk signal: renewal language + competitor mentions + negative sentiment.", 0.75, 1.8, C.teal);
+  card(s, "Product", "2", "Product gap backlog: repeated pain points with evidence, accounts, and urgency.", 4.85, 1.8, C.gold);
+  card(s, "Engineering", "3", "Incident learning loop: connect support pain to post-incident and roadmap follow-through.", 8.95, 1.8, C.green);
+  s.addText("My design goal was to move beyond summarization: extract evidence, score risk, route the right owner, and create review loops that leaders can trust.", {
     x: 1.0,
     y: 4.2,
     w: 10.8,
