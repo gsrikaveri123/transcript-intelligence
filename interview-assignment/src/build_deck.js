@@ -239,8 +239,8 @@ function getType(name) {
   pill(s, "Production path", 5.08, 3.15, 1.6, C.green);
   card(s, "meetings", "100", "Support, external customer, and internal calls.", 0.76, 5.15, C.teal2);
   card(s, "themes", "7", "Business-oriented routing taxonomy.", 4.25, 5.15, C.gold);
-  s.addText("Senior AI Engineer take-home", { x: 9.55, y: 5.85, w: 2.8, h: 0.28, fontSize: 11, bold: true, color: C.white, margin: 0 });
-  s.addText("Pipeline | RAG-style retrieval | gold-label eval | FastAPI review app", { x: 9.55, y: 6.18, w: 2.8, h: 0.48, fontSize: 10, color: "DCE9E5", margin: 0, fit: "shrink" });
+  s.addText("Leadership briefing", { x: 9.55, y: 5.85, w: 2.8, h: 0.28, fontSize: 11, bold: true, color: C.white, margin: 0 });
+  s.addText("Customer risk | Product signals | Operating recommendations", { x: 9.55, y: 6.18, w: 2.8, h: 0.48, fontSize: 10, color: "DCE9E5", margin: 0, fit: "shrink" });
 }
 
 // Slide 2
@@ -265,16 +265,16 @@ function getType(name) {
   const s = pptx.addSlide();
   addBg(s);
   chapter(s, 2, "Pipeline");
-  title(s, "A transparent hybrid classifier is the right first system");
-  note(s, "Pipeline", "Raw JSON folders -> summaries/topics/key moments -> rule-scored call type, theme, product surface, sentiment, risk -> CSV/JSON/HTML/deck outputs", 0.7, 1.68, 5.7, 1.45);
+  title(s, "A trusted insight workflow beats a black-box classifier");
+  note(s, "Operating flow", "Transcript evidence -> theme, sentiment, product, risk -> leadership-ready account and product signals", 0.7, 1.68, 5.7, 1.45);
   bullets(s, [
-    "Explainable enough for product and engineering Q&A.",
-    "Repeatable with no external services or API keys.",
-    "Easy to replace theme rules with embeddings or LLM labels later while keeping audit guardrails.",
+    "Transparent enough for Product, Engineering, CS, and GTM leaders to trust.",
+    "Grounded in transcript evidence, not unsupported summaries.",
+    "Designed to scale into embeddings, LLM extraction, and human review without losing auditability.",
   ], 0.7, 3.68, 5.9, 1.7, 16);
   rect(s, 7.0, 1.72, 4.7, 3.7, C.white, C.line);
-  s.addText("Core outputs", { x: 7.35, y: 2.02, w: 2.4, h: 0.32, fontSize: 18, bold: true, color: C.ink, margin: 0 });
-  s.addText("meeting_analysis.csv\nsummary_metrics.json\nanalysis_report.md\ndashboard.html\nTranscript_Intelligence_Leadership_Deck.pptx", { x: 7.35, y: 2.55, w: 3.9, h: 1.8, fontSize: 15, color: C.ink, margin: 0, fit: "shrink" });
+  s.addText("Leadership surfaces", { x: 7.35, y: 2.02, w: 2.8, h: 0.32, fontSize: 18, bold: true, color: C.ink, margin: 0 });
+  s.addText("Theme and sentiment trends\nHigh-risk account evidence\nProduct surface risk\nHuman-review queue\nGold-label quality checks", { x: 7.35, y: 2.55, w: 3.9, h: 1.8, fontSize: 15, color: C.ink, margin: 0, fit: "shrink" });
   footer(s);
 }
 
@@ -308,7 +308,7 @@ function getType(name) {
   chapter(s, 5, "Product");
   title(s, "Product risk concentrates around Detect, then Protect and Identity");
   barChart(s, summary.product_summary.map((x) => [x.product, x.avg_risk_score]), 0.85, 1.75, 6.6, 3.1, C.gold);
-  note(s, "Recommendation", "Use transcript intelligence as a product risk router: extract the affected product, evidence quote, account, sentiment, and action owner. Detect should be the first executive dashboard surface because outages, SIEM connectors, alert quality, and competitive gaps recur across call types.", 8.0, 1.85, 3.8, 2.7);
+  note(s, "Recommendation", "Use transcript intelligence as a product risk router: extract the affected product, evidence quote, account, sentiment, and action owner. Detect should be the first leadership operating surface because outages, SIEM connectors, alert quality, and competitive gaps recur across call types.", 8.0, 1.85, 3.8, 2.7);
   footer(s);
 }
 
@@ -351,7 +351,7 @@ function getType(name) {
   card(s, "Theme confidence", `${Math.round(evaluation.avg_theme_confidence * 100)}%`, "Average confidence across the rule-labeled taxonomy.", 0.75, 1.65, C.teal);
   card(s, "Cluster purity", `${Math.round(evaluation.avg_cluster_purity * 100)}%`, "How often unsupervised clusters align with dominant business labels.", 4.85, 1.65, C.green);
   card(s, "Review queue", String(evaluation.low_confidence_meetings), "Low-confidence meetings routed for human review before automation.", 8.95, 1.65, C.gold);
-  note(s, "Production AI path", "The current repo uses dependency-free TF-IDF retrieval as a RAG-style prototype. In production, I would replace this with embedding search, LLM extraction constrained to retrieved transcript evidence, confidence thresholds, and human review for ambiguous or high-risk account conversations.", 1.0, 3.55, 10.9, 2.0);
+  note(s, "Production AI path", "The current solution uses dependency-free TF-IDF retrieval as a RAG-style prototype. In production, I would replace this with embedding search, LLM extraction constrained to retrieved transcript evidence, confidence thresholds, and human review for ambiguous or high-risk account conversations.", 1.0, 3.55, 10.9, 2.0);
   footer(s);
 }
 
@@ -364,7 +364,7 @@ function getType(name) {
   card(s, "Call type", `${Math.round(goldEvaluation.call_type_accuracy * 100)}%`, "Accuracy on the curated validation slice.", 0.75, 1.65, C.teal);
   card(s, "Theme", `${Math.round(goldEvaluation.theme_accuracy * 100)}%`, "Accuracy on primary business taxonomy labels.", 4.85, 1.65, C.green);
   card(s, "Risk F1", `${Math.round(goldEvaluation.high_risk_detection.f1 * 100)}%`, "High-risk detection precision/recall balance.", 8.95, 1.65, C.gold);
-  note(s, "Why this matters", "A senior AI system should not stop at generated charts. The repo now includes a 20-meeting gold-label sample and reports accuracy plus precision/recall/F1. In production, this expands into a stratified validation set, reviewer agreement, regression tests, and drift monitoring.", 1.0, 3.55, 10.9, 2.0);
+  note(s, "Why this matters", "A senior AI system should not stop at generated charts. The solution includes a 20-meeting gold-label sample and reports accuracy plus precision/recall/F1. In production, this expands into a stratified validation set, reviewer agreement, regression tests, and drift monitoring.", 1.0, 3.55, 10.9, 2.0);
   footer(s);
 }
 
@@ -372,12 +372,12 @@ function getType(name) {
 {
   const s = pptx.addSlide();
   addBg(s);
-  chapter(s, 10, "Platform");
-  title(s, "Production extensions: real embeddings, API service, and tests");
-  card(s, "Embeddings", "OpenAI", "Optional real retrieval via text-embedding-3-small when OPENAI_API_KEY is set.", 0.75, 1.65, C.teal);
-  card(s, "API", "FastAPI", "Review endpoints for summary, meetings, retrieval examples, and human-review queue.", 4.85, 1.65, C.green);
-  card(s, "Tests", "6", "Unit coverage for classifier, routing, gold eval, and vector similarity behavior.", 8.95, 1.65, C.gold);
-  note(s, "Why this matters", "The repo remains easy to run locally, but the architecture now has clear production interfaces: swap TF-IDF retrieval for embeddings, expose review workflows through an API, and protect behavior with tests and gold-label regression checks.", 1.0, 3.55, 10.9, 2.0);
+  chapter(s, 10, "Operating Model");
+  title(s, "Trusted AI requires evidence, review loops, and quality guardrails");
+  card(s, "Semantic retrieval", "Embeddings", "Use real embeddings to retrieve transcript evidence for leadership questions.", 0.75, 1.65, C.teal);
+  card(s, "Review workflow", "Human loop", "Route ambiguous or high-risk conversations to accountable owners.", 4.85, 1.65, C.green);
+  card(s, "Quality guardrails", "Eval", "Use gold labels and regression tests to monitor routing quality.", 8.95, 1.65, C.gold);
+  note(s, "Why this matters", "This is the production operating model: evidence-grounded retrieval, confidence thresholds, human review for sensitive decisions, and continuous evaluation as new transcripts arrive.", 1.0, 3.55, 10.9, 2.0);
   footer(s);
 }
 
@@ -410,16 +410,16 @@ function getType(name) {
   const s = pptx.addSlide();
   addBg(s);
   chapter(s, 12, "Next");
-  title(s, "Recommended next build");
+  title(s, "Recommended executive decisions");
   bullets(s, [
-    "Ship a theme and risk dashboard for Detect reliability first.",
-    "Add account-level revenue risk overlays for renewal and competitive calls.",
-    "Add owner extraction so action items become trackable workflow, not static notes.",
-    "Upgrade classifier with embeddings or LLM labels, keeping the rule layer as explainable QA.",
+    "Prioritize Detect reliability as the first operating review because it carries the highest customer and commercial risk.",
+    "Stand up account-level revenue risk signals for renewal and competitive calls.",
+    "Convert repeated product gaps into owner-ready roadmap items with transcript evidence.",
+    "Adopt a human-in-the-loop governance model before automating customer-impacting actions.",
   ], 0.9, 1.85, 6.4, 2.4, 18);
   rect(s, 8.0, 1.8, 3.6, 3.4, C.white, C.line);
-  s.addText("Demo path", { x: 8.35, y: 2.1, w: 2.2, h: 0.3, fontSize: 18, bold: true, color: C.ink, margin: 0 });
-  s.addText("1. Run src/analyze_transcripts.py\n2. Open outputs/dashboard.html\n3. Review analysis_report.md\n4. Walk through this deck\n5. Show highest-risk CSV rows", {
+  s.addText("Decision asks", { x: 8.35, y: 2.1, w: 2.2, h: 0.3, fontSize: 18, bold: true, color: C.ink, margin: 0 });
+  s.addText("1. Assign an executive owner for Detect reliability signals\n2. Align Product, CS, and Engineering on risk thresholds\n3. Expand gold-label evaluation before production routing\n4. Pilot retrieval-backed account reviews with CS leaders", {
     x: 8.35,
     y: 2.65,
     w: 2.8,
